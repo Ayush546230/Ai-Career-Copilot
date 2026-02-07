@@ -29,6 +29,7 @@ class SuggestionCategory(str, Enum):
     KEYWORDS = "keywords"
     EXPERIENCE = "experience"
     EDUCATION = "education"
+    SKILLS = "skills"
 
 
 class SuggestionPriority(str, Enum):
@@ -188,6 +189,21 @@ class HealthCheckResponse(BaseModel):
                 "ai_provider_status": "connected"
             }
         }
+
+class RoadmapRequest(BaseModel):
+    missing_skills: List[str]
+    target_role: str
+
+class MilestoneTask(BaseModel):
+    description: str
+
+class Milestone(BaseModel):
+    title: str
+    description: str
+    tasks: List[MilestoneTask]
+
+class RoadmapResponse(BaseModel):
+    milestones: List[Milestone]
 
 
 # Error Models
