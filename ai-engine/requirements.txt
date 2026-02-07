@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-dotenv
+google-generativeai
+openai
+anthropic
+httpx
+pytest
+pytest-asyncio
+PyPDF2
