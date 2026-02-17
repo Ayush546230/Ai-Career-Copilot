@@ -264,13 +264,17 @@ async def analyze_resume(
         )
 @app.post(
     f"{settings.api_v1_prefix}/generate-roadmap",
+   
     response_model=RoadmapResponse,
     status_code=status.HTTP_200_OK,
     tags=["Career Roadmap"],
     summary="Generate Roadmap",
     description="Generate a personalized 8-week roadmap based on missing skills"
 )
-async def generate_roadmap(request: RoadmapRequest):
+async def generate_roadmap(
+    request: RoadmapRequest,  
+    ai_service: AIService = Depends(get_ai_service_dependency) 
+):
     """
     Generate personalized 8-week learning roadmap
     based on missing skills and target role
