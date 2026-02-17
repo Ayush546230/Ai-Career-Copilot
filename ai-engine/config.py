@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings
 from pydantic import Field, validator
 from dotenv import load_dotenv
 
-# Forcefully load .env file
+
 load_dotenv()
 
 
