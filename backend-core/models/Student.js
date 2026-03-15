@@ -69,9 +69,9 @@ const ResumeSchema = new Schema({
     },
 
     skillGapAnalysis: {
-        currentSkills: [String],
-        requiredSkills: [String],
-        missingSkills: [String],
+        currentSkills: [Schema.Types.Mixed],
+        requiredSkills: [Schema.Types.Mixed],
+        missingSkills: [Schema.Types.Mixed],
         skillsToImprove: [{
             skill: String,
             currentLevel: String,
@@ -82,17 +82,21 @@ const ResumeSchema = new Schema({
     },
 
     suggestions: [{
-        category: { type: String, enum: ['formatting', 'content', 'keywords', 'experience', 'education', 'skills'] },
-        priority: { type: String, enum: ['critical', 'important', 'optional'] },
+        category: String,
+        priority: String,
         issue: String,
-        recommendation: String,
-        exampleBefore: String,
-        exampleAfter: String
+        suggestion: String,
+        example: {
+            before: String,
+            after: String
+        }
     }],
 
     embeddingVector: [Number],
     embeddingModel: String,
-    embeddingGeneratedAt: Date
+    embeddingGeneratedAt: Date,
+
+    roadmap: Schema.Types.Mixed
 }, { _id: true, timestamps: true });
 
 const InterviewQuestionSchema = new Schema({

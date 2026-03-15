@@ -4,6 +4,8 @@
  */
 
 const axios = require('axios');
+const crypto = require('crypto');
+const { redisClient } = require('../config/redis');
 const logger = require('../utils/logger');
 
 class RoadmapService {
@@ -106,7 +108,7 @@ class RoadmapService {
      */
 
 
-    async formatRoadmapForSchema(rawMilestones, targetRole) {
+    formatRoadmapForSchema(rawMilestones, targetRole) {
         const formattedMilestones = rawMilestones.map((milestone, index) => {
             return {
                 order: index + 1,
@@ -115,11 +117,7 @@ class RoadmapService {
                 category: 'skill', // Schema enum: skill, project, certification, etc.
                 status: 'not_started', // Schema enum: not_started, in_progress, completed
                 priority: 'important', // Schema enum: critical, important, optional
-                tasks: (milestone.tasks || []).map(task => ({
-                    description: typeof task === 'string' ? task : task.description,
-                    resources: [], // Schema expectation
-                    completed: false
-                }))
+                tasks: this.padTasks(milestone.tasks || [])
             };
         });
 
@@ -137,6 +135,25 @@ class RoadmapService {
             }
         };
     }
+    padTasks(tasks) {
+        const formattedTasks = tasks.map(task => ({
+            description: typeof task === 'string' ? task : task.description,
+            resources: [],
+            completed: false
+        }));
+
+        // Ensure exactly 4 tasks
+        while (formattedTasks.length < 4) {
+            formattedTasks.push({
+                description: `Additional step: Consolidate knowledge and project work`,
+                resources: [],
+                completed: false
+            });
+        }
+
+        return formattedTasks.slice(0, 4); // Limit to 4 if AI gives more
+    }
+
     /**
          * Generate basic fallback roadmap if AI fails
          * @param {string} targetRole - Target role
@@ -145,48 +162,34 @@ class RoadmapService {
     async generateFallbackRoadmap(targetRole) {
         logger.warn('Generating fallback roadmap due to AI Engine error');
 
-        const fallbackMilestones = [
-            {
-                order: 1,
-                title: 'Week 1: Foundations',
-                description: `Learn the fundamentals required for ${targetRole}`,
-                category: 'skill',
-                status: 'not_started',
-                priority: 'important',
-                tasks: [
-                    { description: 'Research role requirements and responsibilities', resources: [], completed: false },
-                    { description: 'Set up development environment', resources: [], completed: false },
-                    { description: 'Complete introductory tutorials', resources: [], completed: false }
-                ]
-            },
-            {
-                order: 2,
-                title: 'Week 2: Core Concepts',
-                description: 'Build understanding of core concepts',
-                category: 'skill',
-                status: 'not_started',
-                priority: 'important',
-                tasks: [
-                    { description: 'Study fundamental concepts', resources: [], completed: false },
-                    { description: 'Practice with basic exercises', resources: [], completed: false },
-                    { description: 'Read relevant documentation', resources: [], completed: false }
-                ]
-            }
+        const fallbackMilestones = [];
+
+        // Generate 8 weeks
+        const themes = [
+            { title: 'Foundations', desc: `Master the core basics required for ${targetRole}` },
+            { title: 'Core Concepts', desc: 'Deep dive into fundamental principles and tools' },
+            { title: 'Advanced Topics', desc: 'Expert techniques and specialized knowledge' },
+            { title: 'Project Implementation', desc: 'Apply your skills to a real-world project' },
+            { title: 'Portfolio Building', desc: 'Showcase your work to potential employers' },
+            { title: 'Interview Prep', desc: 'Master technical and behavioral interviews' },
+            { title: 'Job Search Strategy', desc: 'Optimize your profile and application process' },
+            { title: 'Final Review', desc: 'Mock interviews and final skill sharpening' }
         ];
 
-        // Generate up to 8 weeks
-        for (let i = 3; i <= 8; i++) {
+        for (let i = 1; i <= 8; i++) {
+            const theme = themes[i - 1];
             fallbackMilestones.push({
                 order: i,
-                title: `Week ${i}: Advanced Learning`,
-                description: `Continue building skills for ${targetRole}`,
+                title: `Week ${i}: ${theme.title}`,
+                description: theme.desc,
                 category: 'skill',
                 status: 'not_started',
                 priority: 'important',
                 tasks: [
-                    { description: 'Study advanced topics', resources: [], completed: false },
-                    { description: 'Build practice projects', resources: [], completed: false },
-                    { description: 'Review and consolidate learning', resources: [], completed: false }
+                    { description: `Master ${theme.title} module 1`, resources: [], completed: false },
+                    { description: `Practice ${theme.title} exercises`, resources: [], completed: false },
+                    { description: `Read ${theme.title} documentation`, resources: [], completed: false },
+                    { description: `Review and quiz on ${theme.title}`, resources: [], completed: false }
                 ]
             });
         }

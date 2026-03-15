@@ -97,14 +97,49 @@ const uploadResume = async (req, res) => {
             isPrimary: true,
             extractedText: resumeText,
 
-            // Mapping Snake Case (Python) to Camel Case (Mongoose)
-            atsScore: finalAIData.ats_score,
-            skillGapAnalysis: finalAIData.skill_gap_analysis,
-            suggestions: finalAIData.suggestions,
+            // Mapping Snake Case (AI Engine) to Camel Case (Mongoose)
+            atsScore: {
+                overall: finalAIData.ats_score?.overall,
+                breakdown: {
+                    formatting: finalAIData.ats_score?.breakdown?.formatting,
+                    keywords: finalAIData.ats_score?.breakdown?.keywords,
+                    experience: finalAIData.ats_score?.breakdown?.experience,
+                    education: finalAIData.ats_score?.breakdown?.education,
+                    skills: finalAIData.ats_score?.breakdown?.skills
+                }
+            },
+            skillGapAnalysis: {
+                currentSkills: finalAIData.skill_gap_analysis?.current_skills || [],
+                requiredSkills: (finalAIData.skill_gap_analysis?.required_skills || []).map(skill =>
+                    typeof skill === 'string' ? { skill, priority: 'medium' } : skill
+                ),
+                missingSkills: (finalAIData.skill_gap_analysis?.missing_skills || []).map(skill =>
+                    typeof skill === 'string' ? { skill, priority: 'high' } : skill
+                ),
+                skillsToImprove: finalAIData.skill_gap_analysis?.skills_to_improve?.map(s => ({
+                    skill: s.skill,
+                    currentLevel: s.current_level,
+                    targetLevel: s.target_level,
+                    priority: s.priority
+                })) || []
+            },
+            suggestions: (finalAIData.suggestions || []).map(s => ({
+                category: s.category || 'General',
+                priority: s.priority || 'medium',
+                issue: s.issue || '',
+                suggestion: s.recommendation || s.suggestion || '',
+                example: {
+                    before: s.example?.before || s.example_before || '',
+                    after: s.example?.after || s.example_after || ''
+                }
+            })),
 
             // Metadata
             embeddingModel: finalAIData.model_version || 'gemini-2.5-flash',
-            embeddingGeneratedAt: new Date(finalAIData.analyzed_at || Date.now())
+            embeddingGeneratedAt: new Date(finalAIData.analyzed_at || Date.now()),
+
+            // Roadmap tied to this resume
+            roadmap: roadmap
         };
 
         student.resumes.push(newResume);
@@ -204,6 +239,7 @@ const getDashboard = async (req, res) => {
     try {
         const studentId = req.user?.id || req.userId;
         const cacheKey = `dashboard:${studentId}`;
+        await redisClient.del(cacheKey); // Temporary clear to sync new structure
 
         // 1. Redis Check
         const cachedDashboard = await redisClient.get(cacheKey);
@@ -212,8 +248,10 @@ const getDashboard = async (req, res) => {
             return res.status(200).json({ success: true, data: JSON.parse(cachedDashboard) });
         }
         const student = await Student.findById(studentId)
-            .select('resumes careerRoadmap mentorship progressMetrics profile')
+            .select('resumes careerRoadmap mentorship progressMetrics profile email')
             .lean();
+
+        console.log(`DEBUG: Dashboard fetch for ${student?.email || studentId}. Resumes: ${student?.resumes?.length}, Roadmap: ${!!student?.careerRoadmap}`);
 
         if (!student) {
             return res.status(404).json({
@@ -226,8 +264,11 @@ const getDashboard = async (req, res) => {
         const primaryResume = student.resumes?.find(r => r.isPrimary) || student.resumes?.[0];
         const latestATSScore = primaryResume?.atsScore?.overall || 0;
 
+        // Calculate resume count
+        const totalResumes = student.resumes?.length || 0;
+
         // Calculate missing skills count
-        const missingSkillsCount = primaryResume?.skillGapAnalysis?.missing_skills?.length || 0;
+        const missingSkillsCount = primaryResume?.skillGapAnalysis?.missingSkills?.length || 0;
 
         // Calculate roadmap progress
         const roadmapProgress = student.careerRoadmap?.milestones?.length > 0
@@ -237,23 +278,29 @@ const getDashboard = async (req, res) => {
 
         const activeMentorsCount = student.mentorship?.activeMentors?.filter(m => m.status === 'active').length || 0;
 
-        // 2. Resume Data
+        // 2. Resume Data (Full data for modal compatibility)
         const resumeData = primaryResume ? {
+            _id: primaryResume._id,
             fileName: primaryResume.fileName,
             analyzedAt: primaryResume.uploadedAt,
-            atsScore: primaryResume.atsScore || { overall: 0, breakdown: {} }
+            atsScore: primaryResume.atsScore || { overall: 0, breakdown: {} },
+            skillGapAnalysis: primaryResume.skillGapAnalysis,
+            suggestions: primaryResume.suggestions,
+            roadmap: primaryResume.roadmap || student.careerRoadmap,
+            careerRoadmap: primaryResume.roadmap || student.careerRoadmap // Duplicate for modal compatibility
         } : null;
 
         // 3. Skill Gaps Data
         const skillGapsData = primaryResume?.skillGapAnalysis ? {
-            missing: primaryResume.skillGapAnalysis.missing_skills?.map(skill => ({
-                skill,
-                priority: 'high' // Default priority as it's not in the simple string array
-            })) || [],
-            toImprove: primaryResume.skillGapAnalysis.skills_to_improve?.map(skill => ({
-                skill,
-                currentLevel: 'Intermediate', // Default
-                targetLevel: 'Advanced'      // Default
+            missing: primaryResume.skillGapAnalysis.missingSkills?.map(item => {
+                const skillName = typeof item === 'string' ? item : item.skill;
+                const priority = typeof item === 'string' ? 'high' : item.priority;
+                return { skill: skillName, priority };
+            }) || [],
+            toImprove: primaryResume.skillGapAnalysis.skillsToImprove?.map(s => ({
+                skill: s.skill,
+                currentLevel: s.currentLevel,
+                targetLevel: s.targetLevel
             })) || []
         } : null;
 
@@ -261,10 +308,10 @@ const getDashboard = async (req, res) => {
         const roadmapData = student.careerRoadmap?.milestones?.map((m, index) => ({
             id: m._id || index + 1,
             title: m.title,
+            description: m.description,
             status: m.status,
-            dueDate: null, // Roadmap schema might need dates if not present
-            tasks: m.tasks?.length || 0,
-            completedTasks: m.tasks?.filter(t => t.completed).length || 0
+            priority: m.priority,
+            tasks: m.tasks || []
         })) || [];
 
         // 5. Mentors Data (Mock rich data from ID references if needed, or just return basic info)
@@ -283,12 +330,25 @@ const getDashboard = async (req, res) => {
                 overview: {
                     atsScore: latestATSScore,
                     skillGaps: missingSkillsCount,
+                    resumeCount: totalResumes,
                     roadmapProgress: roadmapProgress,
-                    activeMentors: activeMentorsCount
+                    activeMentors: activeMentorsCount,
+                    targetRole: student.careerRoadmap?.targetRole || student.profile?.targetRole || 'Full Stack Developer'
                 },
                 resume: resumeData,
                 skillGaps: skillGapsData,
+                suggestions: primaryResume?.suggestions?.slice(0, 3).map(s => ({
+                    category: s.category,
+                    priority: s.priority,
+                    issue: s.issue,
+                    suggestion: s.suggestion || s.recommendation,
+                    example: s.example || {
+                        before: s.exampleBefore || '',
+                        after: s.exampleAfter || ''
+                    }
+                })) || [],
                 roadmap: roadmapData,
+                careerRoadmap: roadmapData,
                 mentors: mentorsData
             }
         };
@@ -361,14 +421,10 @@ const getRoadmap = async (req, res) => {
                     status: 'not_started',
                     priority: 'critical',
                     tasks: [
-                        {
-                            description: 'Complete data structures course',
-                            completed: false
-                        },
-                        {
-                            description: 'Solve 50 LeetCode problems',
-                            completed: false
-                        }
+                        { description: 'Complete data structures course', completed: false },
+                        { description: 'Solve 50 LeetCode problems', completed: false },
+                        { description: 'Implement 5 basic sorting algorithms', completed: false },
+                        { description: 'Solve 20 system design questions', completed: false }
                     ]
                 },
                 {
@@ -380,14 +436,10 @@ const getRoadmap = async (req, res) => {
                     status: 'not_started',
                     priority: 'critical',
                     tasks: [
-                        {
-                            description: 'Build a CRUD application',
-                            completed: false
-                        },
-                        {
-                            description: 'Deploy projects to production',
-                            completed: false
-                        }
+                        { description: 'Build a CRUD application', completed: false },
+                        { description: 'Deploy projects to production', completed: false },
+                        { description: 'Create a responsive UI with React', completed: false },
+                        { description: 'Implement user authentication', completed: false }
                     ]
                 },
                 {
@@ -399,14 +451,10 @@ const getRoadmap = async (req, res) => {
                     status: 'not_started',
                     priority: 'important',
                     tasks: [
-                        {
-                            description: 'Complete 20 mock interviews',
-                            completed: false
-                        },
-                        {
-                            description: 'Study system design patterns',
-                            completed: false
-                        }
+                        { description: 'Complete 20 mock interviews', completed: false },
+                        { description: 'Study system design patterns', completed: false },
+                        { description: 'Prepare 10 behavioral stories', completed: false },
+                        { description: 'Review core CS fundamentals', completed: false }
                     ]
                 }
             ],
@@ -421,7 +469,7 @@ const getRoadmap = async (req, res) => {
             regenerationCount: 0
         };
 
-        await redisClient.setEx(cacheKey, 3600, JSON.stringify(roadmapData));
+        await redisClient.setEx(cacheKey, 3600, JSON.stringify(placeholderRoadmap));
 
         res.status(200).json({
             success: true,
@@ -443,12 +491,44 @@ const getRoadmap = async (req, res) => {
 // @access  Private
 const getResumes = async (req, res) => {
     try {
-        const student = await Student.findById(req.user.id).select('resumes');
+        const student = await Student.findById(req.user.id)
+            .select('resumes careerRoadmap email')
+            .lean();
 
-        res.status(200).json({
+        if (!student) {
+            console.error(`ERROR: Student not found for ID: ${req.user.id}`);
+            return res.status(404).json({ success: false, message: 'Student not found' });
+        }
+
+        console.log(`DEBUG: getResumes for ${student.email}. StudentID: ${student._id}. Raw resumes count: ${student.resumes?.length || 0}`);
+
+        // Add fallback roadmap to each resume if not present
+        const resumesWithRoadmap = (student.resumes || []).map(resume => {
+            const resumeObj = { ...resume };
+            // Ensure roadmap is present - either on the resume or from student profile
+            if ((!resumeObj.roadmap || !resumeObj.roadmap.milestones || resumeObj.roadmap.milestones.length === 0) && student.careerRoadmap) {
+                resumeObj.roadmap = student.careerRoadmap;
+                // Also add it as careerRoadmap key for extra safety
+                resumeObj.careerRoadmap = student.careerRoadmap;
+            }
+            return resumeObj;
+        });
+
+        const finalResumes = (resumesWithRoadmap || []).sort((a, b) => {
+            const dateA = new Date(a.uploadedAt || a.createdAt || 0);
+            const dateB = new Date(b.uploadedAt || b.createdAt || 0);
+            return dateB - dateA;
+        });
+
+        console.log(`DEBUG: Final resumes array length to send: ${finalResumes.length}`);
+
+        return res.status(200).json({
             success: true,
-            count: student.resumes.length,
-            data: student.resumes.sort((a, b) => b.uploadedAt - a.uploadedAt) // Latest first
+            count: finalResumes.length,
+            data: {
+                resumes: finalResumes,
+                careerRoadmap: student.careerRoadmap
+            }
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -467,7 +547,13 @@ const getResumeById = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Resume not found' });
         }
 
-        res.status(200).json({ success: true, data: resume });
+        // Add fallback roadmap from student profile if not present in resume
+        const resumeObj = resume.toObject();
+        if (!resumeObj.roadmap && student.careerRoadmap) {
+            resumeObj.roadmap = student.careerRoadmap;
+        }
+
+        res.status(200).json({ success: true, data: resumeObj });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
