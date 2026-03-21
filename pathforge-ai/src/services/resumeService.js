@@ -3,8 +3,8 @@ import api from "./api";
 // Upload a resume PDF
 export const uploadResume = async (file, targetRole) => {
     const formData = new FormData();
-    formData.append("resume", file);
     formData.append("targetRole", targetRole);
+    formData.append("resume", file);
 
     const res = await api.post("/api/student/resume/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -22,6 +22,12 @@ export const getResumes = async () => {
 export const deleteResume = async (id) => {
     const res = await api.delete(`/api/student/resumes/${id}`);
     return res.data.data;
+};
+
+// Set a resume as primary
+export const setPrimaryResume = async (id) => {
+    const res = await api.patch(`/api/student/resumes/${id}/primary`);
+    return res.data;
 };
 
 // Get dashboard stats

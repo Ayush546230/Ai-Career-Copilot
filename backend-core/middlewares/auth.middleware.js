@@ -27,13 +27,25 @@ const protect = async (req, res, next) => {
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Fetch user based on role
+
+        console.time('AUTH_MW_DB');
         let user;
-        if (decoded.role === 'student') {
-            user = await Student.findById(decoded.userId).select('-passwordHash');
-        } else if (decoded.role === 'mentor') {
-            user = await Mentor.findById(decoded.userId).select('-passwordHash');
+        const isFastPath = req.path.includes('/dashboard') || req.path.includes('/roadmap') || req.path.includes('/resumes');
+        const skipUserFetch = isFastPath || req.headers['x-skip-user-fetch'] === 'true';
+
+        if (skipUserFetch) {
+            // Fast path: Just verify ID exists in token, controller will do the heavy lifting
+            user = { _id: decoded.userId, role: decoded.role, accountStatus: 'active' };
+            console.log(`⚡ Fast Path Auth: Skipping DB fetch for ${req.path}`);
+        } else {
+            const selectFields = '_id role accountStatus account.status profile.firstName profile.lastName';
+            if (decoded.role === 'student') {
+                user = await Student.findById(decoded.userId).select(selectFields);
+            } else if (decoded.role === 'mentor') {
+                user = await Mentor.findById(decoded.userId).select(selectFields);
+            }
         }
+        console.timeEnd('AUTH_MW_DB');
 
         // Check if user exists
         if (!user) {
@@ -54,7 +66,7 @@ const protect = async (req, res, next) => {
 
         // Attach user and role to request
         req.user = user;
-        req.userId = decoded.userId;
+        req.userId = decoded.userId || decoded.id;
         req.userRole = decoded.role;
 
         next();

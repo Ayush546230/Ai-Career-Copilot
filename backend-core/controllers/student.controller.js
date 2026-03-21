@@ -9,7 +9,7 @@ const { redisClient } = require('../config/redis');
 // @access  Private (Student only)
 const uploadResume = async (req, res) => {
     try {
-        const studentId = req.user.id; // From auth middleware
+        const studentId = req.userId || req.user?._id || req.user?.id; // From auth middleware
         const file = req.file; // From multer
         // 1. Validation
         if (!file) {
@@ -62,8 +62,8 @@ const uploadResume = async (req, res) => {
         }
 
         // 4. ===== CALL REAL AI-ENGINE MICROSERVICE =====
-        const targetRole = req.body.targetRole || student.profile?.targetRole || 'Full Stack Developer';
-        console.log(`Analyzing resume for: ${targetRole}`);
+        const targetRole = req.body.targetRole || student.careerRoadmap?.targetRole || student.profile?.targetRole || 'Software Engineer';
+        console.log(`DEBUG: TargetRole detected - Body: ${req.body.targetRole}, Roadmap: ${student.careerRoadmap?.targetRole}, Profile: ${student.profile?.targetRole}. Result: ${targetRole}`);
 
         const analysisResult = await aiEngineService.analyzeResume(resumeText, targetRole);
 
@@ -162,6 +162,7 @@ const uploadResume = async (req, res) => {
 
 
         await redisClient.del(`dashboard:${studentId}`);
+        await redisClient.del(`roadmap:${studentId}`);
         await student.save();
 
         // Step 8: Return Response
@@ -239,19 +240,17 @@ const getDashboard = async (req, res) => {
     try {
         const studentId = req.user?.id || req.userId;
         const cacheKey = `dashboard:${studentId}`;
-        await redisClient.del(cacheKey); // Temporary clear to sync new structure
+        // Bypass Redis for now because Upstash network latency (~500ms) is slower than MongoDB Atlas (~50ms)
+        // const cachedDashboard = await redisClient.get(cacheKey);
+        // ...
 
-        // 1. Redis Check
-        const cachedDashboard = await redisClient.get(cacheKey);
-        if (cachedDashboard) {
-            console.log('⚡ Dashboard Cache Hit');
-            return res.status(200).json({ success: true, data: JSON.parse(cachedDashboard) });
-        }
+        console.time('DB_FETCH');
+        // Use negative projection for heavy fields to ensure all other meta (like suggestions) is fetched
         const student = await Student.findById(studentId)
-            .select('resumes careerRoadmap mentorship progressMetrics profile email')
+            .select('-resumes.extractedText -resumes.parsedData -resumes.embeddingVector')
+            .slice('resumes', 5)
             .lean();
-
-        console.log(`DEBUG: Dashboard fetch for ${student?.email || studentId}. Resumes: ${student?.resumes?.length}, Roadmap: ${!!student?.careerRoadmap}`);
+        console.timeEnd('DB_FETCH');
 
         if (!student) {
             return res.status(404).json({
@@ -262,10 +261,14 @@ const getDashboard = async (req, res) => {
 
         // 1. Overview Data
         const primaryResume = student.resumes?.find(r => r.isPrimary) || student.resumes?.[0];
+        console.log(`DEBUG: Dashboard Primary Resume Found: ${!!primaryResume}, Suggestions Count: ${primaryResume?.suggestions?.length || 0}`);
+        if (primaryResume?.suggestions?.length > 0) {
+            console.log(`DEBUG: First Suggestion Sample:`, JSON.stringify(primaryResume.suggestions[0]));
+        }
         const latestATSScore = primaryResume?.atsScore?.overall || 0;
 
-        // Calculate resume count
-        const totalResumes = student.resumes?.length || 0;
+        // Calculate resume count (Persistent lifetime uploads to satisfy user request)
+        const totalResumes = student.progressMetrics?.activityStats?.totalResumeUploads || student.resumes?.length || 0;
 
         // Calculate missing skills count
         const missingSkillsCount = primaryResume?.skillGapAnalysis?.missingSkills?.length || 0;
@@ -333,7 +336,7 @@ const getDashboard = async (req, res) => {
                     resumeCount: totalResumes,
                     roadmapProgress: roadmapProgress,
                     activeMentors: activeMentorsCount,
-                    targetRole: student.careerRoadmap?.targetRole || student.profile?.targetRole || 'Full Stack Developer'
+                    targetRole: student.careerRoadmap?.targetRole || student.profile?.targetRole || 'Software Engineer'
                 },
                 resume: resumeData,
                 skillGaps: skillGapsData,
@@ -373,18 +376,10 @@ const getDashboard = async (req, res) => {
 // @access  Private (Student only)
 const getRoadmap = async (req, res) => {
     try {
-        const studentId = req.user.id;
+        const studentId = req.userId || req.user?._id || req.user?.id;
         const cacheKey = `roadmap:${studentId}`;
 
-        const cachedRoadmap = await redisClient.get(cacheKey);
-        if (cachedRoadmap) {
-            console.log('⚡ Serving Roadmap from Redis Cache');
-            return res.status(200).json({
-                success: true,
-                fromCache: true,
-                data: JSON.parse(cachedRoadmap)
-            });
-        }
+
 
         const student = await Student.findById(studentId)
             .select('careerRoadmap profile')
@@ -409,7 +404,7 @@ const getRoadmap = async (req, res) => {
         const placeholderRoadmap = {
             generatedAt: new Date(),
             lastUpdatedAt: new Date(),
-            targetRole: student.profile?.targetRole || 'Software Engineer',
+            targetRole: student.profile?.targetRole || student.careerRoadmap?.targetRole || 'Software Engineer',
             estimatedTimeToGoal: 12, // months
             milestones: [
                 {
@@ -491,9 +486,13 @@ const getRoadmap = async (req, res) => {
 // @access  Private
 const getResumes = async (req, res) => {
     try {
-        const student = await Student.findById(req.user.id)
-            .select('resumes careerRoadmap email')
+        const studentId = req.userId || req.user?._id || req.user?.id;
+        const student = await Student.findById(studentId)
+            .select('-resumes.extractedText -resumes.parsedData -resumes.embeddingVector')
             .lean();
+
+        // Log timing for comparison
+        console.log(`⚡ Resumes Data fetched from DB for ${student?.email}`);
 
         if (!student) {
             console.error(`ERROR: Student not found for ID: ${req.user.id}`);
@@ -540,7 +539,8 @@ const getResumes = async (req, res) => {
 // @access  Private
 const getResumeById = async (req, res) => {
     try {
-        const student = await Student.findById(req.user.id);
+        const studentId = req.userId || req.user?._id || req.user?.id;
+        const student = await Student.findById(studentId);
         const resume = student.resumes.id(req.params.id);
 
         if (!resume) {
@@ -564,7 +564,8 @@ const getResumeById = async (req, res) => {
 // @access  Private
 const deleteResume = async (req, res) => {
     try {
-        const student = await Student.findById(req.user.id);
+        const studentId = req.userId || req.user?._id || req.user?.id;
+        const student = await Student.findById(studentId);
         const resume = student.resumes.id(req.params.id);
 
         if (!resume) {
@@ -583,6 +584,7 @@ const deleteResume = async (req, res) => {
         }
 
         await student.save();
+        await redisClient.del(`dashboard:${studentId}`); // Clear cache
 
         res.status(200).json({ success: true, message: 'Resume deleted successfully' });
     } catch (error) {
@@ -595,7 +597,8 @@ const deleteResume = async (req, res) => {
 // @access  Private
 const setPrimaryResume = async (req, res) => {
     try {
-        const student = await Student.findById(req.user.id);
+        const studentId = req.userId || req.user?._id || req.user?.id;
+        const student = await Student.findById(studentId);
 
         let found = false;
         student.resumes.forEach(resume => {
@@ -612,6 +615,8 @@ const setPrimaryResume = async (req, res) => {
         }
 
         await student.save();
+        await redisClient.del(`dashboard:${studentId}`); // Clear cache
+
         res.status(200).json({ success: true, message: 'Primary resume updated' });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

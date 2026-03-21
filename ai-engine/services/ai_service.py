@@ -58,6 +58,8 @@ class AIService:
                 resume_text=request.resume_text,
                 target_role=request.target_role
             )
+            logger.info(f"DEBUG: FULL USER PROMPT (first 200 chars): {user_prompt[:200]}")
+            logger.info(f"DEBUG: TARGET ROLE IN PROMPT: {request.target_role}")
             
             logger.info(
                 f"Analyzing resume for role: {request.target_role} "

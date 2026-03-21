@@ -1,0 +1,86 @@
+2026-03-17 23:30:51,916 - main - INFO - Starting ai-engine v1.0.0
+2026-03-17 23:30:51,917 - main - INFO - Environment: development
+2026-03-17 23:30:51,917 - main - INFO - AI Provider: gemini
+2026-03-17 23:30:51,918 - dependencies - INFO - Creating AI provider: gemini
+2026-03-17 23:30:51,918 - core.factory - INFO - Creating Gemini provider with model: models/gemini-2.5-flash
+2026-03-17 23:30:52,431 - providers.gemini - INFO - Gemini client initialized with model: models/gemini-2.5-flash
+2026-03-17 23:30:52,432 - dependencies - INFO - AI provider created successfully: gemini
+2026-03-17 23:30:52,432 - services.ai_service - INFO - AIService initialized with provider: gemini
+2026-03-17 23:30:52,432 - dependencies - INFO - AI service created successfully
+2026-03-17 23:30:52,434 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-17 23:30:54,123 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-17 23:30:54,125 - main - INFO - AI Provider health check: {'service': 'ai-service', 'status': 'healthy', 'provider': {'status': 'healthy', 'provider': 'gemini', 'model': 'models/gemini-2.5-flash', 'latency_ms': 1692.28}}
+2026-03-18 00:00:27,074 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-18 00:00:30,906 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-18 00:06:22,851 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-18 00:06:24,215 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-18 19:01:34,387 - main - INFO - Starting ai-engine v1.0.0
+2026-03-18 19:01:34,389 - main - INFO - Environment: development
+2026-03-18 19:01:34,389 - main - INFO - AI Provider: gemini
+2026-03-18 19:01:34,390 - dependencies - INFO - Creating AI provider: gemini
+2026-03-18 19:01:34,390 - core.factory - INFO - Creating Gemini provider with model: models/gemini-2.5-flash
+2026-03-18 19:01:34,830 - providers.gemini - INFO - Gemini client initialized with model: models/gemini-2.5-flash
+2026-03-18 19:01:34,831 - dependencies - INFO - AI provider created successfully: gemini
+2026-03-18 19:01:34,831 - services.ai_service - INFO - AIService initialized with provider: gemini
+2026-03-18 19:01:34,831 - dependencies - INFO - AI service created successfully
+2026-03-18 19:01:34,833 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-18 19:01:36,194 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-18 19:01:36,200 - main - INFO - AI Provider health check: {'service': 'ai-service', 'status': 'healthy', 'provider': {'status': 'healthy', 'provider': 'gemini', 'model': 'models/gemini-2.5-flash', 'latency_ms': 1368.09}}
+2026-03-18 19:16:06,955 - main - INFO - Shutting down ai-engine
+2026-03-18 19:53:18,396 - main - INFO - Starting ai-engine v1.0.0
+2026-03-18 19:53:18,397 - main - INFO - Environment: development
+2026-03-18 19:53:18,397 - main - INFO - AI Provider: gemini
+2026-03-18 19:53:18,398 - dependencies - INFO - Creating AI provider: gemini
+2026-03-18 19:53:18,398 - core.factory - INFO - Creating Gemini provider with model: models/gemini-2.5-flash
+2026-03-18 19:53:18,860 - providers.gemini - INFO - Gemini client initialized with model: models/gemini-2.5-flash
+2026-03-18 19:53:18,860 - dependencies - INFO - AI provider created successfully: gemini
+2026-03-18 19:53:18,861 - services.ai_service - INFO - AIService initialized with provider: gemini
+2026-03-18 19:53:18,861 - dependencies - INFO - AI service created successfully
+2026-03-18 19:53:18,862 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-18 19:53:20,497 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-18 19:53:20,519 - main - INFO - AI Provider health check: {'service': 'ai-service', 'status': 'healthy', 'provider': {'status': 'healthy', 'provider': 'gemini', 'model': 'models/gemini-2.5-flash', 'latency_ms': 1657.52}}
+2026-03-18 19:59:55,503 - watchfiles.main - INFO - 1 change detected
+2026-03-19 01:06:52,825 - main - INFO - Starting ai-engine v1.0.0
+2026-03-19 01:06:52,827 - main - INFO - Environment: development
+2026-03-19 01:06:52,827 - main - INFO - AI Provider: gemini
+2026-03-19 01:06:52,827 - dependencies - INFO - Creating AI provider: gemini
+2026-03-19 01:06:52,828 - core.factory - INFO - Creating Gemini provider with model: models/gemini-2.5-flash
+2026-03-19 01:06:53,321 - providers.gemini - INFO - Gemini client initialized with model: models/gemini-2.5-flash
+2026-03-19 01:06:53,321 - dependencies - INFO - AI provider created successfully: gemini
+2026-03-19 01:06:53,321 - services.ai_service - INFO - AIService initialized with provider: gemini
+2026-03-19 01:06:53,322 - dependencies - INFO - AI service created successfully
+2026-03-19 01:06:53,324 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-19 01:06:54,719 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-19 01:06:54,740 - main - INFO - AI Provider health check: {'service': 'ai-service', 'status': 'healthy', 'provider': {'status': 'healthy', 'provider': 'gemini', 'model': 'models/gemini-2.5-flash', 'latency_ms': 1417.94}}
+2026-03-19 01:11:40,650 - main - INFO - DEBUG: AI ENGINE RECEIVED REQUEST - Role: AI Engineer, Text Length: 13920
+2026-03-19 01:11:40,650 - main - INFO - Received resume analysis request for role: AI Engineer
+2026-03-19 01:11:40,651 - services.ai_service - INFO - DEBUG: FULL USER PROMPT (first 200 chars): Analyze the following resume for a candidate targeting the role of "AI Engineer".
+
+**Resume Text:**
+Muhammad Ghulam Jillani LinkedIn | +92-321-1174167 | +92-321-1179584 | JillaniPortfolio.com | m.g.ji
+2026-03-19 01:11:40,651 - services.ai_service - INFO - DEBUG: TARGET ROLE IN PROMPT: AI Engineer
+2026-03-19 01:11:40,651 - services.ai_service - INFO - Analyzing resume for role: AI Engineer (resume length: 13920 chars)
+2026-03-19 01:11:40,652 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-19 01:12:19,056 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-19 01:12:19,077 - providers.gemini - INFO - Gemini response received in 38425.69ms
+2026-03-19 01:12:19,080 - services.ai_service - INFO - Resume analysis completed successfully. ATS Score: 70/100
+2026-03-19 01:12:19,081 - main - INFO - Resume analysis completed successfully
+2026-03-19 01:12:19,145 - services.ai_service - INFO - Generating roadmap for AI Engineer with 6 missing skills
+2026-03-19 01:12:19,146 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-19 01:12:34,446 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-19 01:12:34,450 - providers.gemini - INFO - Gemini response received in 15304.48ms
+2026-03-19 01:12:34,451 - services.ai_service - INFO - Roadmap generated in 15306.23ms
+2026-03-19 10:59:34,070 - main - INFO - Starting ai-engine v1.0.0
+2026-03-19 10:59:34,071 - main - INFO - Environment: development
+2026-03-19 10:59:34,071 - main - INFO - AI Provider: gemini
+2026-03-19 10:59:34,071 - dependencies - INFO - Creating AI provider: gemini
+2026-03-19 10:59:34,072 - core.factory - INFO - Creating Gemini provider with model: models/gemini-2.5-flash
+2026-03-19 10:59:34,600 - providers.gemini - INFO - Gemini client initialized with model: models/gemini-2.5-flash
+2026-03-19 10:59:34,601 - dependencies - INFO - AI provider created successfully: gemini
+2026-03-19 10:59:34,601 - services.ai_service - INFO - AIService initialized with provider: gemini
+2026-03-19 10:59:34,603 - dependencies - INFO - AI service created successfully
+2026-03-19 10:59:34,605 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-03-19 10:59:36,030 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-03-19 10:59:36,048 - main - INFO - AI Provider health check: {'service': 'ai-service', 'status': 'healthy', 'provider': {'status': 'healthy', 'provider': 'gemini', 'model': 'models/gemini-2.5-flash', 'latency_ms': 1445.28}}
+2026-03-19 11:00:09,795 - watchfiles.main - INFO - 1 change detected
+2026-03-19 11:33:44,092 - main - INFO - Shutting down ai-engine

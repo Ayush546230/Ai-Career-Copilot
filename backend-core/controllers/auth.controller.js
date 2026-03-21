@@ -64,7 +64,7 @@ const signup = async (req, res) => {
                 email: email.toLowerCase(),
                 passwordHash: password, // Model will hash this automatically
                 profile: { firstName, lastName },
-                careerRoadmap: { targetRole: targetRole || '' }, // Mapping targetRole
+                careerRoadmap: { targetRole: '' }, // Initializing as empty
                 accountStatus: 'active',
                 privacy: {
                     dataProcessingConsent: true,
@@ -243,7 +243,7 @@ const login = async (req, res) => {
 // @access  Private
 const getMe = async (req, res) => {
     try {
-        // User is already attached by protect middleware
+        
         const user = req.user;
         const role = req.userRole;
 

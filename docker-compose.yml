@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./pathforge-ai
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      # These environment variables can be overridden by a local .env file
+      - VITE_API_URL=http://localhost:5000
+      - VITE_BACKEND_URL=http://backend:5000
+    volumes:
+      - ./pathforge-ai:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend-core
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://mongo:27017/pathforge
+      - REDIS_URL=redis://redis:6379
+      - AI_ENGINE_URL=http://ai-engine:8000
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_ENV=development
+    volumes:
+      - ./backend-core:/app
+      - /app/node_modules
+    depends_on:
+      - mongo
+      - redis
+      - ai-engine
+
+  ai-engine:
+    build:
+      context: ./ai-engine
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ai-engine:/app
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  mongo_data:

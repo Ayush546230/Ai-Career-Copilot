@@ -12,7 +12,7 @@ class AIEngineService {
 
         this.client = axios.create({
             baseURL: this.baseURL,
-            timeout: 60000, // 60 seconds
+            timeout: 120000, // 120 seconds
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -57,6 +57,9 @@ class AIEngineService {
                 console.log(' Serving from Redis Cache');
                 return { success: true, data: JSON.parse(cached), fromCache: true };
             }
+            console.log(`DEBUG: Sending request to AI Engine: ${this.baseURL}${this.apiPrefix}/analyze-resume`);
+            console.log(`DEBUG: Payload:`, { target_role: targetRole, text_length: resumeText.length });
+
             const response = await this.client.post(`${this.apiPrefix}/analyze-resume`, {
                 resume_text: resumeText,
                 target_role: targetRole
@@ -67,7 +70,16 @@ class AIEngineService {
             return { success: true, data: response.data, fromCache: false };
 
         } catch (error) {
-            console.error('Resume analysis failed:', error.message);
+            console.error('Resume analysis failed!');
+            if (error.response) {
+                console.error('Error Response Data:', JSON.stringify(error.response.data, null, 2));
+                console.error('Error Response Status:', error.response.status);
+            } else if (error.request) {
+                console.error('No response received from AI Engine. Is it running?');
+                console.error('Error Request:', error.request);
+            } else {
+                console.error('Error Message:', error.message);
+            }
 
             // Handle specific error cases
             if (error.response) {

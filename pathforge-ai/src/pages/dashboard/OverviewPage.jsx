@@ -49,14 +49,11 @@ export default function OverviewPage() {
         <>
             <div style={{ marginBottom: 32 }}>
                 <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, color: "var(--primary)", letterSpacing: "-0.02em" }}>Overview</h1>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
-                    <span className="tag tag-orange" style={{ fontSize: 11, padding: "2px 8px" }}>{student?.careerRoadmap?.targetRole}</span>
-                    <p style={{ color: "var(--text-muted)", fontSize: 13 }}>{primaryResume?.fileName}</p>
-                </div>
+                <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 4 }}>{primaryResume?.fileName}</p>
             </div>
 
             {/* Stats */}
-            <div className="grid-4" style={{ marginBottom: 24 }}>
+            <div className="grid-3" style={{ marginBottom: 24 }}>
                 {stats.map((s, i) => (
                     <div key={i} className="stat-card hover-lift">
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
@@ -97,7 +94,7 @@ export default function OverviewPage() {
                     <div style={{ background: "var(--surface)", borderRadius: "var(--radius)", padding: 28, border: "1px solid var(--border)" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
                             <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17, color: "var(--primary)" }}>Skill Gap Analysis</h3>
-                            <span className="tag tag-orange">{student?.careerRoadmap?.targetRole || 'Target Role'}</span>
+                            <span className="tag tag-orange">{dashboardStats?.targetRole || 'Target Role'}</span>
                         </div>
                         <div style={{ marginBottom: 16 }}>
                             <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Missing Skills</div>

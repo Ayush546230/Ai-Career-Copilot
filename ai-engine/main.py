@@ -32,9 +32,16 @@ from providers.base import (
 )
 
 # Configure logging
+file_handler = logging.FileHandler("ai_engine_debug.log")
+file_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+
 logging.basicConfig(
     level=getattr(logging, settings.log_level),
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+        file_handler
+    ]
 )
 logger = logging.getLogger(__name__)
 
@@ -241,6 +248,7 @@ async def analyze_resume(
     - Prioritized suggestions for improvement
     """
     try:
+        logger.info(f"DEBUG: AI ENGINE RECEIVED REQUEST - Role: {request.target_role}, Text Length: {len(request.resume_text)}")
         logger.info(f"Received resume analysis request for role: {request.target_role}")
         
         # Perform resume analysis

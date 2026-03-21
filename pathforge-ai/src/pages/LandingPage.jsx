@@ -6,6 +6,7 @@ import Footer from "../components/layout/Footer";
 import Icon from "../components/ui/Icon";
 import { DonutScore } from "../components/ui/Charts";
 import { faqs, companyLogos, mockMentors } from "../utils/mockData";
+import heroImage from "../assets/Screenshot 2026-03-20 222817.png";
 
 const features = [
     { icon: "🎯", title: "ATS Score Analysis", desc: "Get a comprehensive ATS score breakdown across formatting, keywords, experience, education, and skills.", color: "#E84855" },
@@ -36,10 +37,10 @@ export default function LandingPage() {
                                 <div className="badge-glow-wrap" />
                                 <div className="badge-shine" />
                                 <Icon name="sparkle" size={16} color="var(--accent)" style={{ animation: "float-mini 2s ease-in-out infinite" }} />
-                                <span style={{ 
-                                    fontFamily: "var(--font-display)", 
-                                    fontWeight: 800, 
-                                    fontSize: 12, 
+                                <span style={{
+                                    fontFamily: "var(--font-display)",
+                                    fontWeight: 800,
+                                    fontSize: 12,
                                     color: "var(--primary)",
                                     letterSpacing: "0.05em",
                                     display: "flex",
@@ -64,8 +65,8 @@ export default function LandingPage() {
                             <button className="btn btn-primary" style={{ fontSize: 16, padding: "16px 36px" }} onClick={() => navigate("/signup")}>
                                 Start for free <Icon name="arrow" size={16} />
                             </button>
-                            <button 
-                                className="btn btn-ghost" 
+                            <button
+                                className="btn btn-ghost"
                                 style={{ fontSize: 16, padding: "16px 36px" }}
                                 onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
                             >
@@ -83,83 +84,31 @@ export default function LandingPage() {
                         </div>
                     </div>
 
-                    {/* Dashboard mockup */}
+                    {/* Dashboard mockup replaced with Screenshot */}
                     <div className="hero-mockup" style={{ marginTop: 70, animation: "fadeUp 0.8s 0.5s ease both" }}>
-                        <div className="glass" style={{ border: "1px solid rgba(232,72,85,0.15)", borderRadius: 24, padding: 24, maxWidth: 900, margin: "0 auto", boxShadow: "0 32px 80px rgba(26,26,46,0.12), 0 0 0 1px rgba(255,255,255,0.8) inset" }}>
-                            <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
-                                {["#FF5F57", "#FEBC2E", "#28C840"].map(c => <div key={c} style={{ width: 12, height: 12, borderRadius: "50%", background: c }} />)}
-                                <div style={{ flex: 1, height: 12, background: "var(--bg-2)", borderRadius: 6, marginLeft: 8, display: "flex", alignItems: "center", paddingLeft: 10 }}>
-                                    <span style={{ fontSize: 9, color: "var(--text-muted)" }}>app.pathforge.ai/dashboard</span>
-                                </div>
-                            </div>
-                            <div style={{ display: "grid", gridTemplateColumns: "200px 1fr", gap: 16, height: 280 }}>
-                                <div style={{ background: "var(--primary)", borderRadius: 14, padding: "16px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
-                                    <div style={{ color: "white", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 13, marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
-                                        <div style={{ width: 20, height: 20, background: "var(--accent)", borderRadius: 5, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800 }}>P</div>
-                                        PathForge AI
-                                    </div>
-                                    {["Overview", "Resumes", "Find Mentor"].map((item, i) => (
-                                        <div key={item} style={{ padding: "8px 10px", borderRadius: 7, background: i === 0 ? "rgba(232,72,85,0.25)" : "transparent", color: i === 0 ? "white" : "rgba(255,255,255,0.5)", fontSize: 11, fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }}>
-                                            <span>{["🏠", "📄", "👥"][i]}</span>{item}
-                                        </div>
-                                    ))}
-                                </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
-                                    <div style={{ background: "white", borderRadius: 12, padding: 16, display: "flex", flexDirection: "column", gap: 8, border: "1px solid var(--border)" }}>
-                                        <div style={{ fontSize: 10, color: "var(--text-muted)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.05em" }}>ATS Score</div>
-                                        <DonutScore score={78} size={64} />
-                                        <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Primary Resume</div>
-                                    </div>
-                                    <div style={{ background: "white", borderRadius: 12, padding: 16, border: "1px solid var(--border)" }}>
-                                        <div style={{ fontSize: 10, color: "var(--text-muted)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.05em", marginBottom: 10 }}>Skill Gap</div>
-                                        {["Kubernetes", "AWS", "Redis"].map(s => (
-                                            <div key={s} style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6, fontSize: 11 }}>
-                                                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent)", flexShrink: 0 }} />{s}
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div style={{ background: "white", borderRadius: 12, padding: 16, border: "1px solid var(--border)", gridColumn: "span 2" }}>
-                                        <div style={{ fontSize: 10, color: "var(--text-muted)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.05em", marginBottom: 8 }}>Score Breakdown</div>
-                                        <div style={{ display: "flex", gap: 8 }}>
-                                            {["Formatting", "Keywords", "Experience", "Education", "Skills"].map((label, i) => {
-                                                const vals = [85, 72, 80, 90, 65];
-                                                const col = vals[i] >= 80 ? "#22c55e" : vals[i] >= 70 ? "#FF6B35" : "#E84855";
-                                                return (
-                                                    <div key={label} style={{ flex: 1, textAlign: "center" }}>
-                                                        <div style={{ height: 40, background: "var(--bg)", borderRadius: 6, display: "flex", alignItems: "flex-end", justifyContent: "center", overflow: "hidden" }}>
-                                                            <div style={{ width: "60%", background: col, borderRadius: "4px 4px 0 0", height: `${vals[i]}%` }} />
-                                                        </div>
-                                                        <div style={{ fontSize: 9, color: "var(--text-muted)", marginTop: 4 }}>{label.slice(0, 4)}</div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className="glass" style={{ 
+                            border: "1px solid rgba(232,72,85,0.15)", 
+                            borderRadius: 24, 
+                            padding: 12, 
+                            maxWidth: 1000, 
+                            margin: "0 auto", 
+                            boxShadow: "0 32px 80px rgba(26,26,46,0.12), 0 0 0 1px rgba(255,255,255,0.8) inset",
+                            overflow: "hidden" 
+                        }}>
+                             <img 
+                                src={heroImage} 
+                                alt="PathForge AI Dashboard" 
+                                style={{ 
+                                    width: "100%", 
+                                    height: "auto", 
+                                    borderRadius: 16,
+                                    display: "block"
+                                }} 
+                            />
                         </div>
                     </div>
                 </div>
             </section>
-
-            {/* ── Company Ticker ── */}
-            <div style={{ background: "var(--primary)", padding: "20px 0", overflow: "hidden" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12, justifyContent: "center" }}>
-                    <div style={{ height: 1, width: 40, background: "rgba(255,255,255,0.2)" }} />
-                    <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase" }}>Professionals from these companies trust us</span>
-                    <div style={{ height: 1, width: 40, background: "rgba(255,255,255,0.2)" }} />
-                </div>
-                <div className="ticker-wrap">
-                    <div className="ticker-content">
-                        {[...companyLogos, ...companyLogos].map((logo, i) => (
-                            <div key={i} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "0 36px", color: "rgba(255,255,255,0.7)", fontSize: 18, fontWeight: 700, fontFamily: "var(--font-display)", flexShrink: 0 }}>
-                                <div style={{ width: 8, height: 8, borderRadius: "50%", background: logo.color, opacity: 0.8 }} />
-                                {logo.name}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
 
             {/* ── Features ── */}
             <section id="features" className="section">
@@ -192,16 +141,15 @@ export default function LandingPage() {
                     </div>
                     <div className="process-steps" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
                         {[
-                            { n: "01", title: "Upload Your Resume", desc: "Simply upload your resume PDF. Our system extracts and processes all content automatically.", icon: "📤" },
-                            { n: "02", title: "AI Analysis Runs", desc: "Our AI engine analyzes ATS compatibility, skill gaps, and generates personalized recommendations.", icon: "⚙️" },
-                            { n: "03", title: "Take Action", desc: "Follow your tailored roadmap, apply suggestions, and connect with mentors to fast-track your career.", icon: "🚀" },
+                            { n: "01", title: "Upload Your Resume", desc: "Simply upload your resume PDF. Our system extracts and processes all content automatically." },
+                            { n: "02", title: "AI Analysis Runs", desc: "Our AI engine analyzes ATS compatibility, skill gaps, and generates personalized recommendations." },
+                            { n: "03", title: "Take Action", desc: "Follow your tailored roadmap, apply suggestions, and connect with mentors to fast-track your career." },
                         ].map((step, i) => (
                             <div key={i} style={{ position: "relative" }}>
                                 <div className="glass" style={{ padding: 32, border: "1px solid rgba(255,255,255,0.1)" }}>
-                                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 48, color: "rgba(232,72,85,0.3)", lineHeight: 1, marginBottom: 16 }}>{step.n}</div>
-                                    <div style={{ fontSize: 32, marginBottom: 16 }}>{step.icon}</div>
+                                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 48, color: "var(--accent)", lineHeight: 1, marginBottom: 16 }}>{step.n}</div>
                                     <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 20, color: "white", marginBottom: 10 }}>{step.title}</h3>
-                                    <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, lineHeight: 1.7 }}>{step.desc}</p>
+                                    <p style={{ color: "white", fontSize: 14, lineHeight: 1.7 }}>{step.desc}</p>
                                 </div>
                                 {i < 2 && <div className="process-step-arrow" style={{ position: "absolute", right: -12, top: "50%", transform: "translateY(-50%)", color: "rgba(232,72,85,0.5)", fontSize: 20, zIndex: 2 }}>→</div>}
                             </div>

@@ -103,8 +103,8 @@ export default function ResumeAnalysisModal({ resume, careerRoadmap, onClose }) 
 
                 {/* Career Roadmap Section */}
                 {(() => {
-                    // 1. Robust Roadmap Detection
-                    const rawRoadmap = careerRoadmap || resume.roadmap || resume.career_roadmap || resume.careerRoadmap;
+                    // 1. Robust Roadmap Detection: Prioritize the resume's specific roadmap over the global careerRoadmap
+                    const rawRoadmap = resume.roadmap || resume.career_roadmap || resume.careerRoadmap || careerRoadmap;
 
                     if (!rawRoadmap) {
                         console.log("DEBUG: Modal - No roadmap data found in any property");
@@ -141,7 +141,6 @@ export default function ResumeAnalysisModal({ resume, careerRoadmap, onClose }) 
                                     </div>
                                     Personalized Career Roadmap
                                 </h3>
-                                <span className="tag tag-orange" style={{ fontSize: 10 }}>AI Generated</span>
                             </div>
 
                             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>

@@ -10,7 +10,7 @@ export default function SignUpPage() {
     const navigate = useNavigate();
     const { signup } = useAuthContext();
     const { message, showToast } = useToast();
-    const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "", targetRole: "", role: "student" });
+    const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "", role: "student" });
     const [loading, setLoading] = useState(false);
     const [showPass, setShowPass] = useState(false);
 
@@ -96,20 +96,6 @@ export default function SignUpPage() {
                                 <input className="input" type={showPass ? "text" : "password"} placeholder="Create a password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} style={{ paddingLeft: 44, paddingRight: 44 }} />
                                 <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-light)" }}><Icon name="lock" size={16} /></div>
                                 <button onClick={() => setShowPass(!showPass)} style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", padding: 0 }}><Icon name="eye" size={16} /></button>
-                            </div>
-                        </div>
-                        {/* Target Role */}
-                        <div>
-                            <label style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 6, display: "block" }}>Target Role</label>
-                            <div style={{ position: "relative" }}>
-                                <input
-                                    className="input"
-                                    placeholder="e.g. Senior Backend Engineer"
-                                    style={{ paddingLeft: 44 }}
-                                    value={form.targetRole}
-                                    onChange={e => setForm({ ...form, targetRole: e.target.value })}
-                                />
-                                <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-light)" }}><Icon name="target" size={16} /></div>
                             </div>
                         </div>
 

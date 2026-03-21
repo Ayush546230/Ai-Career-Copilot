@@ -755,12 +755,13 @@ body {
   border-left: 3px solid var(--accent);
 }
 
-/* ── Dashboard ── */
 .dash-content {
   margin-left: 260px;
   min-height: 100vh;
   background: var(--bg);
   padding: 32px;
+  flex: 1;
+  width: 100%;
 }
 
 .topbar {
