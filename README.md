@@ -125,6 +125,35 @@ Structured RESTful API routes:
 - **Student Schema**: Sub-documents for Location, Education, Skills. Stores resume versions, career roadmaps, and subscription limits. Vector embeddings fields for future AI semantic search.
 
 
+### Product Screenshots
+
+#### Landing Page
+![Landing Page](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220445.png)
+
+#### User Sign-In
+![Sign-In](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220507.png)
+
+#### User Sign-Up
+![Sign-Up](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220523.png)
+
+#### Dashboard Overview
+![Dashboard](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220558.png)
+
+#### Resume Management
+![Resumes](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220628.png)
+
+#### ATS Score Breakdown
+![ATS Breakdown](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220648.png)
+
+#### Skill Gap Analysis
+![Skill Gaps](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220710.png)
+
+#### AI Recommendations
+![Recommendations](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220726.png)
+
+#### Personalized 8 Week Career Roadmap
+![Roadmap](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220751.png)
+
 ---
 
 ## Project Structure
