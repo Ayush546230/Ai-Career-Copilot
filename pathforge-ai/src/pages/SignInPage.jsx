@@ -44,7 +44,6 @@ export default function SignInPage() {
                 <div className="orb" style={{ width: 300, height: 300, background: "rgba(61,90,128,0.15)", bottom: 50, left: -50 }} />
                 <div onClick={() => navigate("/")} style={{ cursor: "pointer", position: "relative", zIndex: 1 }}><Logo dark /></div>
                 <div className="auth-sidebar-content">
-                    <div style={{ fontSize: 44, marginBottom: 24, animation: "float 4s ease-in-out infinite" }}>👋</div>
                     <h2 className="auth-sidebar-h2">Welcome back to PathForge.</h2>
                     <p className="auth-sidebar-p">Your AI-powered career insights are waiting for you. Let's continue forging your path.</p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 40 }}>

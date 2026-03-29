@@ -36,7 +36,7 @@ export default function SignUpPage() {
                 <div className="orb" style={{ width: 300, height: 300, background: "rgba(61,90,128,0.15)", bottom: 50, left: -50 }} />
                 <div onClick={() => navigate("/")} style={{ cursor: "pointer", position: "relative", zIndex: 1 }}><Logo dark /></div>
                 <div className="auth-sidebar-content">
-                    <div style={{ fontSize: 44, marginBottom: 24, animation: "float 4s ease-in-out infinite" }}>🎯</div>
+
                     <h2 className="auth-sidebar-h2">Your career transformation starts here.</h2>
                     <p className="auth-sidebar-p">Join thousands of professionals who've used AI-powered insights to land roles at Google, Meta, Amazon, and more.</p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 40 }}>
