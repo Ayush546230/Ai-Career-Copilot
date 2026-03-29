@@ -125,16 +125,14 @@ Structured RESTful API routes:
 - **Student Schema**: Sub-documents for Location, Education, Skills. Stores resume versions, career roadmaps, and subscription limits. Vector embeddings fields for future AI semantic search.
 
 
+
 ### Product Screenshots
 
 #### Landing Page
 ![Landing Page](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220445.png)
 
-#### User Sign-In
-![Sign-In](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220507.png)
-
 #### User Sign-Up
-![Sign-Up](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220523.png)
+![Sign-Up](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-29%20082658.png)
 
 #### Dashboard Overview
 ![Dashboard](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220558.png)
