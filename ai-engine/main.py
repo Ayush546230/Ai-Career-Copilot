@@ -32,15 +32,16 @@ from providers.base import (
 )
 
 # Configure logging
-file_handler = logging.FileHandler("ai_engine_debug.log")
-file_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+# Render doesn't allow writing to local files easily, so we log to console (stdout).
+# file_handler = logging.FileHandler("ai_engine_debug.log")
+# file_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
 
 logging.basicConfig(
     level=getattr(logging, settings.log_level),
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
         logging.StreamHandler(),
-        file_handler
+        # file_handler
     ]
 )
 logger = logging.getLogger(__name__)
