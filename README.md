@@ -4,18 +4,35 @@
 
 ---
 
+## Live Deployment
+
+| Service | Platform | Link |
+| :--- | :--- | :--- |
+| **Frontend (PathForge AI)** | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) | [Visit Site](https://pathforgeai-zeta.vercel.app/) |
+| **Backend Core API** | ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white) | [API Endpoint](https://ai-career-copilot-gxmv.onrender.com) |
+| **AI Engine Microservice** | ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white) | [API Endpoint](https://ai-career-copilot-1-84c6.onrender.com) |
+
+---
+
 ## Project Overview
 
 **AI Career Copilot** (frontend known as **PathForge**) is a comprehensive, microservices-based career counseling platform. It empowers students and professionals by providing generative AI-driven resume analysis, skill gap detection, and personalized career roadmap generation. The platform acts as a bridge between job seekers and their dream roles by identifying exactly what skills they lack and how to acquire them. Additionally, it features a marketplace-like environment connecting users with verified industry mentors.
 
 ## Overall Tech Stack / Skills Section
 **Languages:** JavaScript (ES6+), Python
+
 **Frontend Frameworks/Libraries:** React.js, Vite, React Router, Tailwind CSS*, Framer Motion, Recharts
+
 **Backend & API:** Node.js, Express.js, FastAPI (Python), RESTful APIs, Swagger/OpenAPI
+
 **Databases & Caching:** MongoDB (Mongoose), Redis
+
 **AI & LLM Integration:** Google Gemini, OpenAI, Anthropic Claude
+
 **Authentication & Security:** JWT (JSON Web Tokens), bcrypt
-**DevOps & Containerization:** Docker, Docker Compose
+
+**DevOps & Containerization:** Docker, Docker 
+
 **Tools & Utilities:** Axios, Zod, React Hook Form, Multer, PyPDF2, pdf-parse, Git
 
 
@@ -126,19 +143,7 @@ Structured RESTful API routes:
 
 
 
-### Product Screenshots
-
-#### Landing Page
-![Landing Page](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220445.png)
-
-#### User Sign-Up
-![Sign-Up](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-29%20082658.png)
-
-#### Dashboard Overview
-![Dashboard](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220558.png)
-
-#### Resume Management
-![Resumes](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220628.png)
+### AI Analysis Screenshots
 
 #### ATS Score Breakdown
 ![ATS Breakdown](./pathforge-ai/src/assets/Screenshots/Screenshot%202026-03-21%20220648.png)
