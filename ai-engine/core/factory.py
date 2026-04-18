@@ -10,8 +10,8 @@ from enum import Enum
 
 from providers.base import AIProviderBase
 from providers.gemini import GeminiProvider
-from providers.openai import OpenAIProvider
-from providers.claude import ClaudeProvider
+# from providers.openai import OpenAIProvider
+# from providers.claude import ClaudeProvider
 
 logger = logging.getLogger(__name__)
 
@@ -19,8 +19,8 @@ logger = logging.getLogger(__name__)
 class AIProviderType(str, Enum):
     """Supported AI provider types."""
     GEMINI = "gemini"
-    OPENAI = "openai"
-    CLAUDE = "claude"
+    # OPENAI = "openai"
+    # CLAUDE = "claude"
 
 
 class AIProviderFactory:
@@ -32,8 +32,8 @@ class AIProviderFactory:
     # Default model configurations for each provider
     DEFAULT_MODELS = {
         AIProviderType.GEMINI: "models/gemini-2.5-flash",
-        AIProviderType.OPENAI: "gpt-4-turbo-preview",
-        AIProviderType.CLAUDE: "claude-3-sonnet-20240229"
+        # AIProviderType.OPENAI: "gpt-4-turbo-preview",
+        # AIProviderType.CLAUDE: "claude-3-sonnet-20240229"
     }
     
     @staticmethod
@@ -98,14 +98,14 @@ class AIProviderFactory:
             return AIProviderFactory._create_gemini_provider(
                 api_key, model, temperature, max_tokens
             )
-        elif provider_enum == AIProviderType.OPENAI:
-            return AIProviderFactory._create_openai_provider(
-                api_key, model, temperature, max_tokens
-            )
-        elif provider_enum == AIProviderType.CLAUDE:
-            return AIProviderFactory._create_claude_provider(
-                api_key, model, temperature, max_tokens
-            )
+        # elif provider_enum == AIProviderType.OPENAI:
+        #     return AIProviderFactory._create_openai_provider(
+        #         api_key, model, temperature, max_tokens
+        #     )
+        # elif provider_enum == AIProviderType.CLAUDE:
+        #     return AIProviderFactory._create_claude_provider(
+        #         api_key, model, temperature, max_tokens
+        #     )
         else:
             # This should never happen due to enum validation above
             raise ValueError(f"Unsupported provider type: {provider_type}")
@@ -135,55 +135,55 @@ class AIProviderFactory:
             max_tokens=max_tokens
         )
     
-    @staticmethod
-    def _create_openai_provider(
-        api_key: Optional[str],
-        model: Optional[str],
-        temperature: float,
-        max_tokens: int
-    ) -> OpenAIProvider:
-        """Create OpenAI provider instance."""
-        api_key = api_key or os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError(
-                "OpenAI API key not found. "
-                "Set OPENAI_API_KEY environment variable or pass api_key parameter"
-            )
+    # @staticmethod
+    # def _create_openai_provider(
+    #     api_key: Optional[str],
+    #     model: Optional[str],
+    #     temperature: float,
+    #     max_tokens: int
+    # ) -> OpenAIProvider:
+    #     """Create OpenAI provider instance."""
+    #     api_key = api_key or os.getenv("OPENAI_API_KEY")
+    #     if not api_key:
+    #         raise ValueError(
+    #             "OpenAI API key not found. "
+    #             "Set OPENAI_API_KEY environment variable or pass api_key parameter"
+    #         )
         
-        model = model or os.getenv("OPENAI_MODEL") or AIProviderFactory.DEFAULT_MODELS[AIProviderType.OPENAI]
+    #     model = model or os.getenv("OPENAI_MODEL") or AIProviderFactory.DEFAULT_MODELS[AIProviderType.OPENAI]
         
-        logger.info(f"Creating OpenAI provider with model: {model}")
-        return OpenAIProvider(
-            api_key=api_key,
-            model=model,
-            temperature=temperature,
-            max_tokens=max_tokens
-        )
+    #     logger.info(f"Creating OpenAI provider with model: {model}")
+    #     return OpenAIProvider(
+    #         api_key=api_key,
+    #         model=model,
+    #         temperature=temperature,
+    #         max_tokens=max_tokens
+    #     )
     
-    @staticmethod
-    def _create_claude_provider(
-        api_key: Optional[str],
-        model: Optional[str],
-        temperature: float,
-        max_tokens: int
-    ) -> ClaudeProvider:
-        """Create Claude provider instance."""
-        api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
-        if not api_key:
-            raise ValueError(
-                "Anthropic API key not found. "
-                "Set ANTHROPIC_API_KEY environment variable or pass api_key parameter"
-            )
+    # @staticmethod
+    # def _create_claude_provider(
+    #     api_key: Optional[str],
+    #     model: Optional[str],
+    #     temperature: float,
+    #     max_tokens: int
+    # ) -> ClaudeProvider:
+    #     """Create Claude provider instance."""
+    #     api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+    #     if not api_key:
+    #         raise ValueError(
+    #             "Anthropic API key not found. "
+    #             "Set ANTHROPIC_API_KEY environment variable or pass api_key parameter"
+    #         )
         
-        model = model or os.getenv("CLAUDE_MODEL") or AIProviderFactory.DEFAULT_MODELS[AIProviderType.CLAUDE]
+    #     model = model or os.getenv("CLAUDE_MODEL") or AIProviderFactory.DEFAULT_MODELS[AIProviderType.CLAUDE]
         
-        logger.info(f"Creating Claude provider with model: {model}")
-        return ClaudeProvider(
-            api_key=api_key,
-            model=model,
-            temperature=temperature,
-            max_tokens=max_tokens
-        )
+    #     logger.info(f"Creating Claude provider with model: {model}")
+    #     return ClaudeProvider(
+    #         api_key=api_key,
+    #         model=model,
+    #         temperature=temperature,
+    #         max_tokens=max_tokens
+    #     )
     
     @staticmethod
     def get_available_providers() -> list[str]:
