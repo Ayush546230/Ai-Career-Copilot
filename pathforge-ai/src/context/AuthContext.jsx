@@ -25,14 +25,16 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (credentials) => {
         const data = await signIn(credentials);
-        setUser(data.user);
-        return data.user;
+        const userData = { ...data.user };
+        setUser(userData);
+        return userData;
     };
 
     const signup = async (userData) => {
         const data = await signUp(userData);
-        setUser(data.user);
-        return data.user;
+        const newUser = { ...data.user };
+        setUser(newUser);
+        return newUser;
     };
 
     const logout = () => {

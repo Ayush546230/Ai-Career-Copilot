@@ -4,16 +4,29 @@ import Logo from "../ui/Logo";
 import Icon from "../ui/Icon";
 import { useAuthContext } from "../../context/AuthContext";
 
-const navItems = [
+const studentNav = [
     { id: "overview", label: "Overview", icon: "home", path: "/dashboard/overview" },
     { id: "resumes", label: "Resumes", icon: "file", path: "/dashboard/resumes" },
+    { id: "interview", label: "Mock Interview", icon: "terminal", path: "/dashboard/interview" },
     { id: "mentors", label: "Find Mentor", icon: "users", path: "/dashboard/mentors" },
+    { id: "chat", label: "Messages", icon: "mail", path: "/dashboard/chat" },
+];
+
+const mentorNav = [
+    { id: "overview", label: "Mentor Home", icon: "home", path: "/dashboard/overview" },
+    { id: "students", label: "My Students", icon: "users", path: "/dashboard/students" },
+    { id: "chat", label: "Messages", icon: "mail", path: "/dashboard/chat" },
+    { id: "sessions", label: "Sessions", icon: "calendar", path: "/dashboard/sessions" },
+    { id: "profile", label: "Expert Profile", icon: "user", path: "/dashboard/settings" },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { logout } = useAuthContext();
+    const { logout, user } = useAuthContext();
+    console.log("Current User in Sidebar:", user);
+
+    const navItems = user?.role === 'mentor' ? mentorNav : studentNav;
 
     const handleNav = (path) => {
         navigate(path);
@@ -57,7 +70,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
                 {/* Nav links */}
                 {navItems.map(item => {
-                    const active = pathname.includes(item.id);
+                    const active = pathname === item.path;
                     return (
                         <button
                             key={item.id}

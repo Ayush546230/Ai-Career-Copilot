@@ -64,6 +64,20 @@ export default function SignUpPage() {
                     <p style={{ color: "var(--text-muted)", fontSize: 15, marginBottom: 36 }}>Start your free trial. 3 resume uploads included.</p>
 
                     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+                        {/* Role Selection */}
+                        <div style={{ display: "flex", background: "var(--bg-alt)", borderRadius: 12, padding: 4, marginBottom: 8 }}>
+                            <button 
+                                className={`btn ${form.role === 'student' ? 'btn-primary' : 'btn-ghost'}`} 
+                                style={{ flex: 1, borderRadius: 10, padding: '8px' }}
+                                onClick={() => setForm({...form, role: 'student'})}
+                            >Student</button>
+                            <button 
+                                className={`btn ${form.role === 'mentor' ? 'btn-primary' : 'btn-ghost'}`} 
+                                style={{ flex: 1, borderRadius: 10, padding: '8px' }}
+                                onClick={() => setForm({...form, role: 'mentor'})}
+                            >Mentor</button>
+                        </div>
+
                         {/* Name */}
                         <div className="auth-name-grid">
                             <div>
@@ -81,6 +95,27 @@ export default function SignUpPage() {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Mentor Specific Fields */}
+                        {form.role === 'mentor' && (
+                            <div className="auth-name-grid">
+                                <div>
+                                    <label style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 6, display: "block" }}>Current Company</label>
+                                    <div style={{ position: "relative" }}>
+                                        <input className="input" placeholder="Google" value={form.currentCompany} onChange={e => setForm({ ...form, currentCompany: e.target.value })} style={{ paddingLeft: 44 }} />
+                                        <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-light)" }}><Icon name="terminal" size={16} /></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 6, display: "block" }}>Exp (Years)</label>
+                                    <div style={{ position: "relative" }}>
+                                        <input className="input" type="number" placeholder="5" value={form.yearsOfExperience} onChange={e => setForm({ ...form, yearsOfExperience: e.target.value })} style={{ paddingLeft: 44 }} />
+                                        <div style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-light)" }}><Icon name="star" size={16} /></div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Email */}
                         <div>
                             <label style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 6, display: "block" }}>Email Address</label>
@@ -102,7 +137,7 @@ export default function SignUpPage() {
                         <button className="btn btn-primary" style={{ width: "100%", padding: "16px", marginTop: 8, fontSize: 16 }} onClick={handleSubmit} disabled={loading}>
                             {loading
                                 ? <div style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "white", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
-                                : <>Create Account <Icon name="arrow" size={16} /></>
+                                : <>Create {form.role === 'mentor' ? 'Mentor' : 'Student'} Account <Icon name="arrow" size={16} /></>
                             }
                         </button>
                     </div>

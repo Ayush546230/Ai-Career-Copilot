@@ -7,6 +7,18 @@ import OverviewPage from './pages/dashboard/OverviewPage'
 import ResumesPage from './pages/dashboard/ResumesPage'
 import FindMentorPage from './pages/dashboard/FindMentorPage'
 import SettingsPage from './pages/dashboard/SettingsPage'
+import MockInterviewPage from './pages/dashboard/MockInterviewPage'
+import MentorDashboard from './pages/dashboard/MentorDashboard'
+import ChatPage from './pages/dashboard/ChatPage'
+import StudentsPage from './pages/dashboard/StudentsPage'
+import SessionsPage from './pages/dashboard/SessionsPage'
+import { useAuthContext } from './context/AuthContext'
+
+function RoleBasedOverview() {
+  const { user } = useAuthContext();
+  if (user?.role === 'mentor') return <MentorDashboard />;
+  return <OverviewPage />;
+}
 
 function App() {
   return (
@@ -17,9 +29,13 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Navigate to="overview" />} />
-          <Route path="overview" element={<OverviewPage />} />
+          <Route path="overview" element={<RoleBasedOverview />} />
           <Route path="resumes" element={<ResumesPage />} />
           <Route path="mentors" element={<FindMentorPage />} />
+          <Route path="interview" element={<MockInterviewPage />} />
+          <Route path="chat" element={<ChatPage />} />
+          <Route path="students" element={<StudentsPage />} />
+          <Route path="sessions" element={<SessionsPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Routes>

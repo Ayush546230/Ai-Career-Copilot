@@ -1,0 +1,11 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/ai-engine/venv/Scripts/python.exe",
+    "python.venvPath": "${workspaceFolder}/ai-engine",
+    "python.venv": "venv",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/ai-engine",
+        "${workspaceFolder}/ai-engine/venv/Lib/site-packages"
+    ],
+    "python.envFile": "${workspaceFolder}/ai-engine/.env",
+    "python.analysis.typeCheckingMode": "basic"
+}
