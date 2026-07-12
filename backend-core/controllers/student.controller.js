@@ -160,7 +160,8 @@ const uploadResume = async (req, res) => {
         student.progressMetrics.activityStats.totalResumeUploads += 1;
         student.progressMetrics.activityStats.lastActiveDate = new Date();
 
-
+        // Update profile target role and persist
+        student.profile.targetRole = targetRole;
         await redisClient.del(`dashboard:${studentId}`);
         await redisClient.del(`roadmap:${studentId}`);
         await student.save();
@@ -352,7 +353,8 @@ const getDashboard = async (req, res) => {
                 })) || [],
                 roadmap: roadmapData,
                 careerRoadmap: roadmapData,
-                mentors: mentorsData
+                mentors: mentorsData,
+                mentorship: student.mentorship
             }
         };
         await redisClient.setEx(cacheKey, 3600, JSON.stringify(dashboardData));
@@ -622,6 +624,23 @@ const setPrimaryResume = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+const updateProfile = async (req, res) => {
+    try {
+        const studentId = req.userId || req.user?._id;
+        const { firstName, lastName } = req.body;
+        const student = await Student.findById(studentId);
+        if (!student) return res.status(404).json({ success: false, message: 'Student not found' });
+        if (firstName) student.profile.firstName = firstName;
+        if (lastName) student.profile.lastName = lastName;
+        student.profile.displayName = `${student.profile.firstName} ${student.profile.lastName}`;
+        await student.save();
+        res.status(200).json({ success: true, message: 'Profile updated', data: student.profile });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     uploadResume,
     getDashboard,
@@ -629,5 +648,6 @@ module.exports = {
     getResumes,
     getResumeById,
     deleteResume,
-    setPrimaryResume
+    setPrimaryResume,
+    updateProfile
 };

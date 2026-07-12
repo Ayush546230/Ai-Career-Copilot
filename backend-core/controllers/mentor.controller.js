@@ -1,4 +1,8 @@
-const { Student, Mentor } = require('../models');
+const { Student, Mentor, Message } = require('../models');
+const aiEngineService = require('../services/aiEngine.service');
+const mongoose = require('mongoose');
+const { redisClient } = require('../config/redis');
+
 // @desc    Get list of mentors with filters
 // @route   GET /api/mentor
 // @access  Public
@@ -155,7 +159,7 @@ const sendMentorshipRequest = async (req, res) => {
 
         // Find student
         const student = await Student.findById(studentId)
-            .select('mentorship profile');
+            .select('mentorship profile resumes careerRoadmap');
 
         if (!student) {
             return res.status(404).json({
@@ -189,42 +193,52 @@ const sendMentorshipRequest = async (req, res) => {
         }
 
         // Create mentorship request in student's record
-        if (!student.mentorship) {
-            student.mentorship = { mentorRequests: [] };
-        }
-        if (!student.mentorship.mentorRequests) {
-            student.mentorship.mentorRequests = [];
-        }
+        if (!student.mentorship) student.mentorship = { mentorRequests: [] };
+        if (!student.mentorship.mentorRequests) student.mentorship.mentorRequests = [];
 
-        student.mentorship.mentorRequests.push({
-            mentorId,
-            requestedAt: new Date(),
-            status: 'pending',
-            message: message || ''
-        });
+        // Check if there's an existing request entry to update instead of pushing duplicate
+        const existingStudentReq = student.mentorship.mentorRequests.find(r => r.mentorId.toString() === mentorId.toString());
+        if (existingStudentReq) {
+            existingStudentReq.status = 'pending';
+            existingStudentReq.requestedAt = new Date();
+            existingStudentReq.message = message || '';
+        } else {
+            student.mentorship.mentorRequests.push({
+                mentorId,
+                requestedAt: new Date(),
+                status: 'pending',
+                message: message || ''
+            });
+        }
+        student.markModified('mentorship.mentorRequests');
 
         // Add request to mentor's pending requests
-        if (!mentor.mentorship.students) {
-            mentor.mentorship.students = { pendingRequests: [] };
-        }
-        if (!mentor.mentorship.students.pendingRequests) {
-            mentor.mentorship.students.pendingRequests = [];
-        }
+        if (!mentor.mentorship.students) mentor.mentorship.students = { pendingRequests: [] };
+        if (!mentor.mentorship.students.pendingRequests) mentor.mentorship.students.pendingRequests = [];
 
-        mentor.mentorship.students.pendingRequests.push({
-            studentId,
-            requestedAt: new Date(),
-            status: 'pending',
-            studentMessage: message || '',
-            studentProfile: {
-                name: student.profile?.displayName ||
-                    `${student.profile?.firstName} ${student.profile?.lastName}`,
-                targetRole: student.profile?.targetRole,
-                experience: `${student.profile?.yearsOfExperience || 0} years`,
-                goals: student.mentorship?.preferences?.mentorshipGoals || []
-            },
-            viewedByMentor: false
-        });
+        // Check if there's an existing pending request in mentor's array
+        const existingMentorReq = mentor.mentorship.students.pendingRequests.find(r => r.studentId.toString() === studentId.toString());
+        if (existingMentorReq) {
+            existingMentorReq.status = 'pending';
+            existingMentorReq.requestedAt = new Date();
+            existingMentorReq.studentMessage = message || '';
+            existingMentorReq.viewedByMentor = false;
+        } else {
+            mentor.mentorship.students.pendingRequests.push({
+                studentId,
+                requestedAt: new Date(),
+                status: 'pending',
+                studentMessage: message || '',
+                studentProfile: {
+                    name: student.profile?.displayName || `${student.profile?.firstName} ${student.profile?.lastName}`,
+                    targetRole: student.profile?.targetRole || student.careerRoadmap?.targetRole || student.getPrimaryResume()?.roadmap?.targetRole || 'Software Engineer',
+                    experience: `${student.profile?.yearsOfExperience || 0} years`,
+                    goals: student.mentorship?.preferences?.mentorshipGoals || []
+                },
+                viewedByMentor: false
+            });
+        }
+        mentor.markModified('mentorship.students.pendingRequests');
 
         // Update mentor's analytics
         if (!mentor.analytics) {
@@ -271,73 +285,111 @@ const updateProfile = async (req, res) => {
         const mentor = await Mentor.findById(mentorId);
 
         if (!mentor) {
-            return res.status(404).json({
-                success: false,
-                message: 'Mentor not found'
-            });
+            return res.status(404).json({ success: false, message: 'Mentor not found' });
         }
 
-        // Allowed fields for update
-        const allowedUpdates = {
-            'profile.tagline': updates.tagline,
-            'profile.bio': updates.bio,
-            'profile.linkedinUrl': updates.linkedinUrl,
-            'profile.githubUrl': updates.githubUrl,
-            'profile.portfolioUrl': updates.portfolioUrl
-        };
-
-        // Update expertise if provided
-        if (updates.technicalSkills) {
-            mentor.expertise.technicalSkills = updates.technicalSkills;
+        // 1. Update Profile Fields
+        if (updates.profile) {
+            if (updates.profile.firstName) mentor.profile.firstName = updates.profile.firstName;
+            if (updates.profile.lastName) mentor.profile.lastName = updates.profile.lastName;
+            if (updates.profile.tagline) mentor.profile.tagline = updates.profile.tagline;
+            if (updates.profile.bio) mentor.profile.bio = updates.profile.bio;
+            if (updates.profile.currentCompany) mentor.profile.currentCompany = updates.profile.currentCompany;
+            
+            // Sync displayName
+            mentor.profile.displayName = `${mentor.profile.firstName} ${mentor.profile.lastName}`;
         }
 
-        if (updates.canHelpWith) {
-            mentor.expertise.canHelpWith = updates.canHelpWith;
+        // 2. Update Expertise
+        if (updates.expertise) {
+            if (!mentor.expertise) mentor.expertise = {};
+            
+            if (updates.expertise.technicalSkills) {
+                mentor.expertise.technicalSkills = updates.expertise.technicalSkills.map(s => ({
+                    name: s.skill,
+                    proficiency: (s.proficiency || 'expert').toLowerCase(),
+                    yearsOfExperience: mentor.profile.totalYearsOfExperience || 0 
+                }));
+            }
+            if (updates.expertise.domains) {
+                // Wrap strings into objects as per DomainExpertiseSchema
+                mentor.expertise.domains = updates.expertise.domains.map(d => ({
+                    name: d,
+                    yearsOfExperience: mentor.profile.totalYearsOfExperience || 0
+                }));
+            }
         }
 
-        // Update availability
+        // 3. Update Mentorship details
+        if (updates.mentorship) {
+            if (!mentor.mentorship) mentor.mentorship = {};
+            
+            if (updates.mentorship.experience) {
+                if (!mentor.mentorship.experience) mentor.mentorship.experience = {};
+                mentor.mentorship.experience.totalYears = updates.mentorship.experience.totalYears;
+                mentor.profile.totalYearsOfExperience = updates.mentorship.experience.totalYears;
+            }
+            if (updates.mentorship.style) {
+                if (!mentor.mentorship.style) mentor.mentorship.style = {};
+                
+                // Map frontend style to snake_case enum and ensure it's an array
+                const styleMap = {
+                    'Hands-on': 'hands_on',
+                    'Advisory': 'advisory',
+                    'Project-based': 'project_based',
+                    'Career Focused': 'career_focused'
+                };
+                const mappedStyle = styleMap[updates.mentorship.style.approach] || 'hands_on';
+                mentor.mentorship.style.approach = [mappedStyle];
+            }
+        }
+
+        // 4. Update Availability
         if (updates.availability) {
-            if (updates.availability.status) {
-                mentor.mentorship.availability.status = updates.availability.status;
-            }
-            if (updates.availability.maxActiveStudents) {
-                mentor.mentorship.availability.maxActiveStudents =
-                    updates.availability.maxActiveStudents;
-            }
-            if (updates.availability.hoursPerWeek) {
-                mentor.mentorship.availability.hoursPerWeek =
-                    updates.availability.hoursPerWeek;
-            }
+            if (!mentor.mentorship) mentor.mentorship = {};
+            if (!mentor.mentorship.availability) mentor.mentorship.availability = {};
+            
+            // Map 'busy' to 'not_accepting'
+            const statusMap = {
+                'accepting': 'accepting',
+                'busy': 'not_accepting',
+                'limited': 'limited'
+            };
+            mentor.mentorship.availability.status = statusMap[updates.availability] || 'accepting';
         }
-
-        // Update pricing
-        if (updates.pricing) {
-            if (updates.pricing.isFree !== undefined) {
-                mentor.mentorship.pricing.isFree = updates.pricing.isFree;
-            }
-            if (updates.pricing.isPaid !== undefined) {
-                mentor.mentorship.pricing.isPaid = updates.pricing.isPaid;
-            }
-            if (updates.pricing.sessionTypes) {
-                mentor.mentorship.pricing.sessionTypes = updates.pricing.sessionTypes;
-            }
-        }
-
-        // Update basic profile fields
-        Object.keys(allowedUpdates).forEach(key => {
-            if (allowedUpdates[key] !== undefined) {
-                const keys = key.split('.');
-                if (keys.length === 2) {
-                    mentor[keys[0]][keys[1]] = allowedUpdates[key];
-                }
-            }
-        });
 
         await mentor.save();
 
+        // 5. Trigger AI Sync
+        try {
+            const profileText = `
+                Name: ${mentor.profile.displayName}
+                Tagline: ${mentor.profile.tagline || ''}
+                Bio: ${mentor.profile.bio || ''}
+                Current Company: ${mentor.profile.currentCompany || 'Freelancer'}
+                Skills: ${mentor.expertise.technicalSkills.map(s => s.name).join(', ')}
+                Domains: ${mentor.expertise.domains.map(d => d.name).join(', ')}
+                Style: ${mentor.mentorship.style.approach}
+                Experience: ${mentor.profile.totalYearsOfExperience} years
+            `.trim();
+
+            await aiEngineService.client.post('/api/v1/rag/index-mentor', {
+                mentor_id: mentor._id.toString(),
+                profile_text: profileText,
+                metadata: {
+                    name: mentor.profile.displayName,
+                    role: mentor.profile.tagline || '',
+                    company: mentor.profile.currentCompany || 'Freelancer',
+                    skills: mentor.expertise.technicalSkills.map(s => s.name),
+                    experience: mentor.profile.totalYearsOfExperience
+                }
+            });
+        } catch (syncError) {
+            console.warn(`AI Sync failed but profile saved locally: ${syncError.message}`);
+        }
         res.status(200).json({
             success: true,
-            message: 'Profile updated successfully',
+            message: 'Profile updated successfully and synced with AI',
             data: {
                 profile: mentor.profile,
                 expertise: mentor.expertise,
@@ -364,6 +416,7 @@ const getDashboard = async (req, res) => {
         const mentor = await Mentor.findById(mentorId).lean();
 
         if (!mentor) {
+            console.error(`DEBUG: Mentor ${mentorId} not found for dashboard`);
             return res.status(404).json({
                 success: false,
                 message: 'Mentor not found'
@@ -371,26 +424,51 @@ const getDashboard = async (req, res) => {
         }
 
         // 1. Overview Logic
-        const activeStudents = mentor.mentorship?.students?.active?.length || 0;
+        const activeStudents = mentor.mentorship?.students?.current?.length || 0;
         const pendingRefRequests = mentor.mentorship?.students?.pendingRequests?.length || 0;
         const rating = mentor.reputation?.overallRating || 0;
-        // Mocking sessions this month for now as session model is not fully visible/linked here easily
-        // In a real app, query the Session model.
         const sessionsThisMonth = 0;
 
         // 2. Requests Data
         const requestsData = mentor.mentorship?.students?.pendingRequests?.map(req => ({
-            id: req._id || Date.now(), // Fallback ID
+            id: req._id,
             studentName: req.studentProfile?.name || 'Unknown Student',
             targetRole: req.studentProfile?.targetRole || 'N/A',
+            studentId: req.studentId,
             message: req.studentMessage,
             requestedAt: req.requestedAt
         })) || [];
 
-        // 3. Sessions Data (Mock for now or empty array)
+        // 3. Active Students Data
+        const currentStudents = mentor.mentorship?.students?.current || [];
+        const studentIds = currentStudents.map(s => s.studentId);
+        const studentsDetails = await Student.find({ _id: { $in: studentIds } })
+            .select('profile.targetRole careerRoadmap.targetRole profile.firstName profile.lastName profile.displayName email');
+        
+        const studentRoleMap = {};
+        const studentNameMap = {};
+        studentsDetails.forEach(s => {
+            studentRoleMap[s._id.toString()] = s.profile?.targetRole || s.careerRoadmap?.targetRole || 'Mentee';
+            studentNameMap[s._id.toString()] = s.profile?.displayName || (s.profile?.firstName ? `${s.profile.firstName} ${s.profile.lastName}` : null) || s.email || 'Student';
+        });
+
+        const activeStudentsList = currentStudents.map(s => ({
+            studentId: s.studentId,
+            studentName: studentNameMap[s.studentId.toString()] || 'Student',
+            joinedAt: s.relationshipStarted || s.joinedAt || new Date(),
+            status: s.status || 'active',
+            targetRole: studentRoleMap[s.studentId.toString()] || 'Mentee'
+        }));
+
+        console.log(`DEBUG Dashboard [${mentor.profile?.displayName}]: Requests: ${requestsData.length}, Active: ${activeStudentsList.length}`);
+        if (activeStudentsList.length > 0) {
+            console.log(`DEBUG Dashboard [${mentor.profile?.displayName}]: First Active Student: ${activeStudentsList[0].studentName}`);
+        }
+
+        // 4. Sessions Data (Mock for now)
         const sessionsData = [];
 
-        // 4. Earnings Data (Mock)
+        // 5. Earnings Data (Mock)
         const earningsData = {
             thisMonth: 0,
             total: 0,
@@ -398,7 +476,7 @@ const getDashboard = async (req, res) => {
             currency: '$'
         };
 
-        // 5. Profile Completion (Simple calculation)
+        // 6. Profile Completion
         let completionScore = 0;
         if (mentor.profile?.bio) completionScore += 20;
         if (mentor.expertise?.technicalSkills?.length > 0) completionScore += 20;
@@ -415,6 +493,7 @@ const getDashboard = async (req, res) => {
                     rating
                 },
                 requests: requestsData,
+                activeStudents: activeStudentsList,
                 sessions: sessionsData,
                 earnings: earningsData,
                 profileCompletion: completionScore
@@ -435,9 +514,257 @@ const getDashboard = async (req, res) => {
         });
     }
 };
+
+// @desc    Match mentors using AI
+// @route   POST /api/mentor/match
+// @access  Private (Student only)
+const matchMentorsWithAI = async (req, res) => {
+    try {
+        const studentId = req.userId || req.user?._id;
+        const student = await Student.findById(studentId);
+        
+        if (!student) {
+            return res.status(404).json({ success: false, message: 'Student not found' });
+        }
+
+        const primaryResume = student.resumes.find(r => r.isPrimary) || student.resumes[0];
+        if (!primaryResume) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Please upload a resume to use AI matching' 
+            });
+        }
+
+        // Call AI Engine
+        const targetRole = student.profile?.targetRole || student.careerRoadmap?.targetRole || 'Software Engineer';
+        
+        // Extract skill names if they are stored as objects
+        const extractSkillNames = (skillsArr) => {
+            if (!skillsArr) return [];
+            return skillsArr.map(item => {
+                if (typeof item === 'string') return item;
+                return item.skill || item.name || '';
+            }).filter(Boolean);
+        };
+
+        const skills = extractSkillNames(primaryResume.skillGapAnalysis?.currentSkills);
+        const required_skills = extractSkillNames(primaryResume.skillGapAnalysis?.requiredSkills || primaryResume.skillGapAnalysis?.required_skills);
+        const missing_skills = extractSkillNames(primaryResume.skillGapAnalysis?.missingSkills || primaryResume.skillGapAnalysis?.missing_skills);
+
+        console.log(`DEBUG: Matching Mentors for ${student.email}`);
+        console.log(`DEBUG: Target Role: ${targetRole}`);
+        console.log(`DEBUG: Skills Count: ${skills.length}, Required: ${required_skills.length}, Missing: ${missing_skills.length}`);
+
+        // --- Caching Logic ---
+        const cacheKey = `mentor_match:${studentId}:${primaryResume._id}:${targetRole.replace(/\s+/g, '_')}`;
+        
+        try {
+            const cachedResults = await redisClient.get(cacheKey);
+            if (cachedResults) {
+                console.log(`DEBUG: Returning cached mentor matches for ${student.email}`);
+                return res.status(200).json({
+                    success: true,
+                    data: JSON.parse(cachedResults),
+                    source: 'cache'
+                });
+            }
+        } catch (cacheError) {
+            console.warn(`Redis cache fetch failed: ${cacheError.message}`);
+        }
+        // ----------------------
+
+        // Call AI Engine
+        const result = await aiEngineService.matchMentors({
+            resume_text: primaryResume.extractedText,
+            target_role: targetRole,
+            skills: skills,
+            required_skills: required_skills,
+            missing_skills: missing_skills,
+            interests: student.profile?.interests || []
+        });
+
+        if (!result.success) {
+            return res.status(500).json({ success: false, message: result.error });
+        }
+
+        // --- Save to Cache ---
+        try {
+            // Cache results for 24 hours (86400 seconds)
+            await redisClient.setEx(cacheKey, 86400, JSON.stringify(result.data));
+            console.log(`DEBUG: Cached new mentor matches for ${student.email}`);
+        } catch (cacheError) {
+            console.warn(`Failed to save results to Redis: ${cacheError.message}`);
+        }
+        // ----------------------
+
+        res.status(200).json({
+            success: true,
+            data: result.data
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Failed to find mentor matches',
+            error: error.message
+        });
+    }
+};
+
+const acceptRequest = async (req, res) => {
+    try {
+        const mentorId = req.userId || req.user?._id;
+        const { requestId } = req.params;
+
+        console.log(`DEBUG: Accept Request - Mentor: ${mentorId}, Request: ${requestId}`);
+
+        const mentor = await Mentor.findById(mentorId);
+        if (!mentor) return res.status(404).json({ success: false, message: 'Mentor not found' });
+
+        const request = mentor.mentorship.students.pendingRequests.id(requestId);
+        if (!request) {
+            console.warn(`DEBUG: Request ${requestId} not found in pending list. Maybe already processed?`);
+            return res.status(404).json({ success: false, message: 'Request not found' });
+        }
+
+        const studentId = request.studentId;
+        const student = await Student.findById(studentId);
+
+        if (!student) {
+            console.error(`DEBUG: Student ${studentId} no longer exists`);
+            mentor.mentorship.students.pendingRequests.pull(requestId);
+            await mentor.save();
+            return res.status(404).json({ success: false, message: 'Student no longer exists' });
+        }
+
+        // 1. Move to active students in Mentor model
+        if (!mentor.mentorship.students.current) mentor.mentorship.students.current = [];
+        
+        // Check if already in current to avoid duplicates
+        const alreadyCurrent = mentor.mentorship.students.current.some(s => s.studentId.toString() === studentId.toString());
+        if (!alreadyCurrent) {
+            mentor.mentorship.students.current.push({
+                studentId,
+                studentName: request.studentProfile?.name || student.profile?.displayName || student.email,
+                relationshipStarted: new Date(),
+                status: 'active'
+            });
+        }
+        
+        // Remove from pending
+        mentor.mentorship.students.pendingRequests.pull(requestId);
+
+        // 2. Update Student's record
+        if (!student.mentorship) student.mentorship = { activeMentors: [], mentorRequests: [] };
+        if (!student.mentorship.activeMentors) student.mentorship.activeMentors = [];
+        if (!student.mentorship.mentorRequests) student.mentorship.mentorRequests = [];
+
+        const studentReq = student.mentorship.mentorRequests.find(r => r.mentorId.toString() === mentorId.toString());
+        if (studentReq) studentReq.status = 'accepted';
+
+        // Check if already in activeMentors to avoid duplicates
+        const alreadyActive = student.mentorship.activeMentors.some(m => m.mentorId.toString() === mentorId.toString());
+        if (!alreadyActive) {
+            student.mentorship.activeMentors.push({
+                mentorId,
+                mentorName: mentor.profile.displayName || `${mentor.profile.firstName} ${mentor.profile.lastName}`,
+                status: 'active',
+                joinedAt: new Date()
+            });
+        }
+
+        await mentor.save();
+        await student.save();
+
+        console.log(`DEBUG: Successfully accepted request from ${student.profile.displayName}`);
+        res.status(200).json({ success: true, message: 'Request accepted successfully' });
+    } catch (error) {
+        console.error('Accept request error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+const rejectRequest = async (req, res) => {
+    try {
+        const mentorId = req.userId;
+        const { requestId } = req.params;
+
+        const mentor = await Mentor.findById(mentorId);
+        if (!mentor) return res.status(404).json({ success: false, message: 'Mentor not found' });
+
+        const request = mentor.mentorship.students.pendingRequests.id(requestId);
+        if (!request) return res.status(404).json({ success: false, message: 'Request not found' });
+
+        const studentId = request.studentId;
+        const student = await Student.findById(studentId);
+        
+        if (student) {
+            if (!student.mentorship) student.mentorship = { mentorRequests: [] };
+            if (!student.mentorship.mentorRequests) student.mentorship.mentorRequests = [];
+            
+            const studentReq = student.mentorship.mentorRequests.find(r => r.mentorId.toString() === mentorId.toString());
+            if (studentReq) studentReq.status = 'rejected';
+            await student.save();
+        }
+
+        // Remove from pending
+        mentor.mentorship.students.pendingRequests.pull(requestId);
+        await mentor.save();
+
+        res.status(200).json({ success: true, message: 'Request rejected' });
+    } catch (error) {
+        console.error('Reject request error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+const removeStudent = async (req, res) => {
+    try {
+        const mentorId = req.userId;
+        const { studentId } = req.params;
+
+        const mentor = await Mentor.findById(mentorId);
+        if (!mentor) return res.status(404).json({ success: false, message: 'Mentor not found' });
+
+        // Remove from mentor's current students
+        if (mentor.mentorship && mentor.mentorship.students && mentor.mentorship.students.current) {
+            mentor.mentorship.students.current = mentor.mentorship.students.current.filter(
+                s => s.studentId.toString() !== studentId.toString()
+            );
+            await mentor.save();
+        }
+
+        const student = await Student.findById(studentId);
+        if (student && student.mentorship && student.mentorship.activeMentors) {
+            // Update student's active mentors list
+            student.mentorship.activeMentors = student.mentorship.activeMentors.filter(
+                m => m.mentorId.toString() !== mentorId.toString()
+            );
+            
+            // Also update the original request status to rejected so they can re-request cleanly
+            if (student.mentorship.mentorRequests) {
+                const reqToUpdate = student.mentorship.mentorRequests.find(r => r.mentorId.toString() === mentorId.toString());
+                if (reqToUpdate) {
+                    reqToUpdate.status = 'rejected';
+                }
+            }
+            
+            await student.save();
+        }
+
+        res.status(200).json({ success: true, message: 'Student removed successfully' });
+    } catch (error) {
+        console.error('Remove student error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     getMentors,
     sendMentorshipRequest,
     updateProfile,
-    getDashboard
+    getDashboard,
+    matchMentorsWithAI,
+    acceptRequest,
+    rejectRequest,
+    removeStudent
 };

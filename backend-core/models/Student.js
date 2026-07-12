@@ -356,6 +356,8 @@ const StudentSchema = new Schema({
     mentorship: {
         activeMentors: [{
             mentorId: { type: Schema.Types.ObjectId, ref: 'Mentor' },
+            mentorName: String,
+            joinedAt: Date,
             relationshipStarted: Date,
             sessionCount: { type: Number, default: 0 },
             lastSessionDate: Date,
@@ -570,6 +572,7 @@ StudentSchema.methods.hasActiveMentor = function (mentorId) {
 };
 
 StudentSchema.methods.getPrimaryResume = function () {
+    if (!this.resumes || !Array.isArray(this.resumes)) return null;
     return this.resumes.find(r => r.isPrimary) || this.resumes[0];
 };
 

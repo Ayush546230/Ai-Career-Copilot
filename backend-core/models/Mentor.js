@@ -102,6 +102,7 @@ const MentorshipPackageSchema = new Schema({
 
 const CurrentStudentSchema = new Schema({
     studentId: { type: Schema.Types.ObjectId, ref: 'Student', required: true },
+    studentName: String,
     relationshipStarted: { type: Date, default: Date.now },
     sessionCount: { type: Number, default: 0 },
     lastSessionDate: Date,
