@@ -120,21 +120,33 @@ export default function OverviewPage() {
                     <p style={{ fontSize: 12, color: "var(--text-light)", marginTop: 14 }}>PDF format • Instant AI analysis • Direct feedback</p>
                 </div>
 
-                {/* Top suggestions */}
+                {/* Active Mentors (Chat) */}
                 <div style={{ background: "var(--surface)", borderRadius: "var(--radius)", padding: 28, border: "1px solid var(--border)" }}>
-                    <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17, color: "var(--primary)", marginBottom: 20 }}>Top Suggestions</h3>
-                    {(student.suggestions || []).slice(0, 1).map((s, i) => (
-                        <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 14, paddingBottom: 14, borderBottom: "none" }}>
-                            <span className={`suggestion-priority priority-${s.priority.toLowerCase()}`} style={{ flexShrink: 0 }}>{s.priority}</span>
-                            <div>
-                                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--primary)", marginBottom: 2 }}>{s.issue}</div>
-                                <div style={{ fontSize: 12, color: "var(--text-muted)" }}>{s.suggestion}</div>
-                            </div>
+                    <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17, color: "var(--primary)", marginBottom: 20 }}>My Mentors</h3>
+                    {student.mentorship?.activeMentors?.length > 0 ? (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                            {student.mentorship.activeMentors.map(m => (
+                                <div key={m.mentorId} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", background: "var(--bg-alt)", borderRadius: 12 }}>
+                                    <div>
+                                        <div style={{ fontSize: 14, fontWeight: 600 }}>{m.mentorName || "Expert Mentor"}</div>
+                                        <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Active Since {m.joinedAt ? new Date(m.joinedAt).toLocaleDateString() : "Recently"}</div>
+                                    </div>
+                                    <button
+                                        className="btn btn-primary"
+                                        style={{ padding: "8px", borderRadius: "50%", width: 32, height: 32, minWidth: 0 }}
+                                        onClick={() => navigate("/dashboard/chat", { state: { recipient: { id: m.mentorId, name: m.mentorName || "Expert Mentor" } } })}
+                                    >
+                                        <Icon name="mail" size={14} />
+                                    </button>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                    <button className="btn btn-ghost" style={{ width: "100%", marginTop: 6, padding: "10px", fontSize: 13 }} onClick={() => setSelectedResume(primaryResume)}>
-                        <Icon name="chevron-right" size={14} /> View All Suggestions
-                    </button>
+                    ) : (
+                        <div style={{ textAlign: "center", padding: "20px 0" }}>
+                            <p style={{ fontSize: 13, color: "var(--text-muted)", marginBottom: 12 }}>No active mentors yet.</p>
+                            <button className="btn btn-ghost" style={{ fontSize: 12 }} onClick={() => navigate("/dashboard/mentors")}>Find a Mentor</button>
+                        </div>
+                    )}
                 </div>
             </div>
 
