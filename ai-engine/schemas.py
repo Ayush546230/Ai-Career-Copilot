@@ -206,6 +206,94 @@ class RoadmapResponse(BaseModel):
     milestones: List[Milestone]
 
 
+# Interview Models
+class InterviewType(str, Enum):
+    TECHNICAL = "technical"
+    HR = "hr"
+    BEHAVIORAL = "behavioral"
+
+
+class InterviewDifficulty(str, Enum):
+    """Starting difficulty level for interview questions."""
+    EASY = "easy"
+    MEDIUM = "medium"
+    HARD = "hard"
+
+
+class InterviewStartRequest(BaseModel):
+    resume_text: str = Field(..., description="Resume text to base questions on")
+    target_role: str = Field(..., description="Target role for the interview")
+    interview_type: InterviewType = Field(default=InterviewType.TECHNICAL)
+    difficulty: InterviewDifficulty = Field(default=InterviewDifficulty.EASY, description="Starting difficulty level")
+
+
+class InterviewSession(BaseModel):
+    session_id: str
+    initial_question: str
+
+
+class InterviewChatRequest(BaseModel):
+    session_id: str
+    user_message: str
+
+
+class InterviewChatResponse(BaseModel):
+    next_question: str
+    is_ended: bool = False
+
+
+class InterviewScorecard(BaseModel):
+    overall_score: int = Field(..., ge=0, le=100)
+    strengths: List[str]
+    weaknesses: List[str]
+    feedback: Any
+    summary: Optional[str] = "No summary available."
+
+
+class QuestionEvaluation(BaseModel):
+    """Per-question evaluation data from the AI agent."""
+    question_number: int = Field(..., description="Question number (1-based)")
+    score: int = Field(default=0, ge=0, le=100, description="Score for this answer (0-100)")
+    performance: str = Field(default="average", description="Performance rating: strong, average, or weak")
+    feedback_notes: List[str] = Field(default=[], description="Internal evaluation notes")
+
+
+class InterviewReport(BaseModel):
+    session_id: str
+    status: str = "completed"
+    scorecard: InterviewScorecard
+    question_evaluations: List[QuestionEvaluation] = Field(default=[], description="Per-question scoring from AI agent")
+
+
+# Mentor & RAG Models
+class MentorMatchRequest(BaseModel):
+    resume_text: str
+    target_role: str
+    skills: List[str]
+    required_skills: Optional[List[str]] = []
+    missing_skills: Optional[List[str]] = []
+    interests: Optional[List[str]] = []
+
+
+class MentorMatchResult(BaseModel):
+    mentor_id: str
+    name: str
+    match_score: float
+    match_reason: str
+    expertise: List[str]
+    metadata: Optional[Dict[str, Any]] = {}
+
+
+class MentorMatchResponse(BaseModel):
+    matches: List[MentorMatchResult]
+
+
+class MentorIndexRequest(BaseModel):
+    mentor_id: str
+    profile_text: str
+    metadata: Dict[str, Any]
+
+
 # Error Models
 class ErrorResponse(BaseModel):
     """Standard error response."""

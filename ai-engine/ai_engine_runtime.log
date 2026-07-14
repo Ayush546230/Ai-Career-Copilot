@@ -1,0 +1,194 @@
+2026-05-12 11:01:50,932 - main - INFO - Starting ai-engine v1.0.0
+2026-05-12 11:01:50,933 - main - INFO - Environment: development
+2026-05-12 11:01:50,933 - main - INFO - AI Provider: gemini
+2026-05-12 11:01:50,933 - dependencies - INFO - Creating AI provider: gemini
+2026-05-12 11:01:50,934 - core.factory - INFO - Creating Gemini provider with model: models/gemini-2.5-flash
+2026-05-12 11:01:51,264 - providers.gemini - INFO - Gemini client initialized with model: models/gemini-2.5-flash
+2026-05-12 11:01:51,264 - dependencies - INFO - AI provider created successfully: gemini
+2026-05-12 11:01:51,265 - services.ai_service - INFO - AIService initialized with provider: gemini
+2026-05-12 11:01:51,266 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-12 11:01:55,847 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-12 11:01:55,851 - main - INFO - AI Provider health check: {'service': 'ai-service', 'status': 'healthy', 'provider': {'status': 'healthy', 'provider': 'gemini', 'model': 'models/gemini-2.5-flash', 'latency_ms': 4585.9}}
+2026-05-16 11:33:38,121 - main - INFO - Starting ai-engine v1.0.0
+2026-05-16 11:33:38,122 - main - INFO - Environment: development
+2026-05-16 11:33:38,123 - main - INFO - AI Provider: gemini
+2026-05-16 11:33:38,123 - dependencies - INFO - Creating AI provider: gemini
+2026-05-16 11:33:38,123 - core.factory - INFO - Creating Gemini provider with model: models/gemini-2.5-flash
+2026-05-16 11:33:38,631 - providers.gemini - INFO - Gemini client initialized with model: models/gemini-2.5-flash
+2026-05-16 11:33:38,631 - dependencies - INFO - AI provider created successfully: gemini
+2026-05-16 11:33:38,631 - services.ai_service - INFO - AIService initialized with provider: gemini
+2026-05-16 11:33:38,635 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-16 11:33:40,227 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-16 11:33:40,234 - main - INFO - AI Provider health check: {'service': 'ai-service', 'status': 'healthy', 'provider': {'status': 'healthy', 'provider': 'gemini', 'model': 'models/gemini-2.5-flash', 'latency_ms': 1601.9}}
+2026-05-16 11:43:49,944 - main - INFO - Starting interview session for role: Software Engineer
+2026-05-16 11:43:50,075 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-16 11:43:54,976 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-16 11:43:55,009 - providers.gemini - INFO - Gemini response received in 5038.12ms
+2026-05-16 11:44:14,787 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-16 11:44:17,210 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-16 11:44:17,230 - providers.gemini - INFO - Gemini response received in 2443.80ms
+2026-05-16 11:44:21,883 - main - INFO - Ending interview session: 5b5fc5ef-fbd1-4c62-9a88-bd69e37ed380
+2026-05-16 11:44:21,914 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-16 11:44:28,786 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-16 11:44:28,792 - providers.gemini - INFO - Gemini response received in 6877.95ms
+2026-05-16 11:44:50,266 - services.rag_service - INFO - RAGService initialized with Pinecone index: ai-career-copilot
+2026-05-16 11:44:50,268 - main - INFO - Finding mentor matches for target role: Full stack dev
+2026-05-16 11:44:50,269 - services.mentor_service - INFO - Querying Pinecone for mentors matching role: Full stack dev
+2026-05-16 11:44:50,287 - main - INFO - Finding mentor matches for target role: Full stack dev
+2026-05-16 11:44:50,287 - services.mentor_service - INFO - Querying Pinecone for mentors matching role: Full stack dev
+2026-05-16 11:44:51,066 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-05-16 11:44:51,261 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-05-16 11:44:53,229 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-16 11:44:53,436 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 503 Service Unavailable"
+2026-05-16 11:44:53,613 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-16 11:44:53,615 - services.mentor_service - ERROR - LLM Mentor Evaluation failed: Gemini Error: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'The service is currently unavailable.', 'status': 'UNAVAILABLE'}}
+2026-05-16 11:45:04,191 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-16 11:45:04,198 - providers.gemini - INFO - Gemini response received in 10586.93ms
+2026-05-18 00:46:24,519 - main - INFO - Starting ai-engine v1.0.0
+2026-05-18 00:46:24,521 - main - INFO - Environment: development
+2026-05-18 00:46:24,521 - main - INFO - AI Provider: gemini
+2026-05-18 00:46:24,521 - dependencies - INFO - Creating AI provider: gemini
+2026-05-18 00:46:24,522 - core.factory - INFO - Creating Gemini provider with model: models/gemini-2.5-flash
+2026-05-18 00:46:25,031 - providers.gemini - INFO - Gemini client initialized with model: models/gemini-2.5-flash
+2026-05-18 00:46:25,031 - dependencies - INFO - AI provider created successfully: gemini
+2026-05-18 00:46:25,031 - services.ai_service - INFO - AIService initialized with provider: gemini
+2026-05-18 00:46:25,035 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-18 00:46:26,435 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-18 00:46:26,441 - main - INFO - AI Provider health check: {'service': 'ai-service', 'status': 'healthy', 'provider': {'status': 'healthy', 'provider': 'gemini', 'model': 'models/gemini-2.5-flash', 'latency_ms': 1408.39}}
+2026-05-18 00:48:55,512 - main - INFO - Starting interview session for role: Software Engineer
+2026-05-18 00:48:55,518 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-18 00:48:58,587 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-18 00:48:58,593 - providers.gemini - INFO - Gemini response received in 3079.11ms
+2026-05-18 00:49:22,294 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-18 00:49:24,830 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-18 00:49:24,833 - providers.gemini - INFO - Gemini response received in 2539.61ms
+2026-05-18 00:49:24,925 - main - INFO - Ending interview session: 10d4aeeb-5db3-4f7b-88e8-bf62c25d9634
+2026-05-18 00:49:24,966 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-18 00:49:29,474 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-18 00:49:29,480 - providers.gemini - INFO - Gemini response received in 4515.22ms
+2026-05-18 00:49:55,709 - services.rag_service - INFO - RAGService initialized with Pinecone index: ai-career-copilot
+2026-05-18 00:49:55,710 - main - INFO - Finding mentor matches for target role: Full stack dev
+2026-05-18 00:49:55,710 - services.mentor_service - INFO - Querying Pinecone for mentors matching role: Full stack dev
+2026-05-18 00:49:55,715 - main - INFO - Finding mentor matches for target role: Full stack dev
+2026-05-18 00:49:55,716 - services.mentor_service - INFO - Querying Pinecone for mentors matching role: Full stack dev
+2026-05-18 00:49:56,678 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-05-18 00:49:56,807 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-05-18 00:49:59,596 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-18 00:49:59,915 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-05-18 00:50:09,120 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-18 00:50:09,124 - providers.gemini - INFO - Gemini response received in 9530.27ms
+2026-05-18 00:50:09,634 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-05-18 00:50:09,638 - providers.gemini - INFO - Gemini response received in 9723.16ms
+2026-07-11 20:28:56,273 - main - INFO - Starting ai-engine v1.0.0
+2026-07-11 20:28:56,274 - main - INFO - Environment: development
+2026-07-11 20:28:56,274 - main - INFO - AI Provider: gemini
+2026-07-11 20:28:56,274 - dependencies - INFO - Creating AI provider: gemini
+2026-07-11 20:28:56,274 - core.factory - INFO - Creating Gemini provider with model: models/gemini-2.5-flash
+2026-07-11 20:28:56,334 - watchfiles.main - INFO - 5 changes detected
+2026-07-11 20:28:56,690 - providers.gemini - INFO - Gemini client initialized with model: models/gemini-2.5-flash
+2026-07-11 20:28:56,690 - dependencies - INFO - AI provider created successfully: gemini
+2026-07-11 20:28:56,690 - services.ai_service - INFO - AIService initialized with provider: gemini
+2026-07-11 20:28:56,691 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-07-11 20:28:58,432 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:28:58,449 - main - INFO - AI Provider health check: {'service': 'ai-service', 'status': 'healthy', 'provider': {'status': 'healthy', 'provider': 'gemini', 'model': 'models/gemini-2.5-flash', 'latency_ms': 1759.02}}
+2026-07-11 20:29:11,543 - services.rag_service - INFO - RAGService initialized with Pinecone index: ai-career-copilot
+2026-07-11 20:29:11,558 - main - INFO - Finding mentor matches for target role: Full stack dev
+2026-07-11 20:29:11,560 - services.mentor_service - INFO - Querying Pinecone for mentors matching role: Full stack dev
+2026-07-11 20:29:11,569 - main - INFO - Finding mentor matches for target role: Full stack dev
+2026-07-11 20:29:11,570 - services.mentor_service - INFO - Querying Pinecone for mentors matching role: Full stack dev
+2026-07-11 20:29:12,844 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-07-11 20:29:12,940 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-07-11 20:29:15,752 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-07-11 20:29:16,158 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-07-11 20:29:24,761 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:29:24,766 - providers.gemini - INFO - Gemini response received in 8608.62ms
+2026-07-11 20:29:26,812 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:29:26,817 - providers.gemini - INFO - Gemini response received in 11075.89ms
+2026-07-11 20:31:35,247 - core.langchain_bridge - INFO - Creating LangChain Gemini model: models/gemini-2.5-flash
+2026-07-11 20:31:36,428 - services.interview_agent_service - INFO - InterviewAgentService initialized with provider=gemini, model=models/gemini-2.5-flash
+2026-07-11 20:31:36,429 - dependencies - INFO - Using LangChain Interview Agent
+2026-07-11 20:31:36,430 - main - INFO - Starting interview session for role: Software Engineer
+2026-07-11 20:31:40,114 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:31:41,471 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:31:43,417 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:32:46,870 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:32:50,262 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:32:53,159 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:32:55,309 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:32:55,315 - services.interview_agent_service - ERROR - Agent error during chat: 'list' object has no attribute 'lower'
+2026-07-11 20:33:33,714 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:33:35,967 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:33:38,834 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:33:41,497 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:33:41,505 - services.interview_agent_service - ERROR - Agent error during chat: 'list' object has no attribute 'lower'
+2026-07-11 20:34:12,220 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:34:14,267 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:34:16,725 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:34:20,003 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:34:23,382 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:34:23,405 - services.interview_agent_service - ERROR - Agent error during chat: 'list' object has no attribute 'lower'
+2026-07-11 20:34:47,950 - watchfiles.main - INFO - 1 change detected
+2026-07-11 20:35:44,285 - watchfiles.main - INFO - 1 change detected
+2026-07-11 20:35:44,489 - main - INFO - Shutting down ai-engine
+2026-07-11 20:35:45,917 - watchfiles.main - INFO - 1 change detected
+2026-07-11 20:35:54,531 - watchfiles.main - INFO - 5 changes detected
+2026-07-11 20:35:54,663 - main - INFO - Starting ai-engine v1.0.0
+2026-07-11 20:35:54,664 - main - INFO - Environment: development
+2026-07-11 20:35:54,664 - main - INFO - AI Provider: gemini
+2026-07-11 20:35:54,664 - dependencies - INFO - Creating AI provider: gemini
+2026-07-11 20:35:54,664 - core.factory - INFO - Creating Gemini provider with model: models/gemini-2.5-flash
+2026-07-11 20:35:54,892 - watchfiles.main - INFO - 1 change detected
+2026-07-11 20:35:55,033 - providers.gemini - INFO - Gemini client initialized with model: models/gemini-2.5-flash
+2026-07-11 20:35:55,033 - dependencies - INFO - AI provider created successfully: gemini
+2026-07-11 20:35:55,034 - services.ai_service - INFO - AIService initialized with provider: gemini
+2026-07-11 20:35:55,034 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-07-11 20:35:57,393 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:35:57,397 - main - INFO - AI Provider health check: {'service': 'ai-service', 'status': 'healthy', 'provider': {'status': 'healthy', 'provider': 'gemini', 'model': 'models/gemini-2.5-flash', 'latency_ms': 2362.97}}
+2026-07-11 20:37:25,838 - watchfiles.main - INFO - 1 change detected
+2026-07-11 20:37:26,047 - main - INFO - Shutting down ai-engine
+2026-07-11 20:37:27,327 - watchfiles.main - INFO - 1 change detected
+2026-07-11 20:37:35,358 - watchfiles.main - INFO - 5 changes detected
+2026-07-11 20:37:35,501 - main - INFO - Starting ai-engine v1.0.0
+2026-07-11 20:37:35,501 - main - INFO - Environment: development
+2026-07-11 20:37:35,501 - main - INFO - AI Provider: gemini
+2026-07-11 20:37:35,501 - dependencies - INFO - Creating AI provider: gemini
+2026-07-11 20:37:35,502 - core.factory - INFO - Creating Gemini provider with model: models/gemini-2.5-flash
+2026-07-11 20:37:35,715 - watchfiles.main - INFO - 1 change detected
+2026-07-11 20:37:35,874 - providers.gemini - INFO - Gemini client initialized with model: models/gemini-2.5-flash
+2026-07-11 20:37:35,875 - dependencies - INFO - AI provider created successfully: gemini
+2026-07-11 20:37:35,875 - services.ai_service - INFO - AIService initialized with provider: gemini
+2026-07-11 20:37:35,875 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-07-11 20:37:37,856 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-07-11 20:37:37,859 - main - INFO - AI Provider health check: {'service': 'ai-service', 'status': 'healthy', 'provider': {'status': 'healthy', 'provider': 'gemini', 'model': 'models/gemini-2.5-flash', 'latency_ms': 1983.62}}
+2026-07-11 20:38:54,794 - watchfiles.main - INFO - 1 change detected
+2026-07-11 20:42:03,865 - watchfiles.main - INFO - 1 change detected
+2026-07-11 20:45:05,371 - core.langchain_bridge - INFO - Creating LangChain Gemini model: models/gemini-2.5-flash
+2026-07-11 20:45:06,874 - services.interview_agent_service - INFO - InterviewAgentService initialized with provider=gemini, model=models/gemini-2.5-flash
+2026-07-11 20:45:06,875 - dependencies - INFO - Using LangChain Interview Agent
+2026-07-11 20:45:09,580 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:45:09,590 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._async_request_once in 1.5 seconds as it raised ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 50.318714523s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '50s'}]}}.
+2026-07-11 20:45:11,419 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:45:11,422 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._async_request_once in 2.32 seconds as it raised ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 48.42740593s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '48s'}]}}.
+2026-07-11 20:45:14,594 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:45:14,597 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._async_request_once in 4.92 seconds as it raised ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 45.535501152s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '45s'}]}}.
+2026-07-11 20:45:19,887 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:45:19,893 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._async_request_once in 8.6 seconds as it raised ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 40.016054345s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '40s'}]}}.
+2026-07-11 20:45:29,674 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:45:29,676 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._async_request_once in 16.7 seconds as it raised ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 30.20588895s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '30s'}]}}.
+2026-07-11 20:45:40,850 - main - INFO - Ending interview session: 16918958-dbb8-47ed-8c2f-c4fe16016150
+2026-07-11 20:45:41,126 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2026-07-11 20:45:42,347 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:45:42,350 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._async_request_once in 1.79 seconds as it raised ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 17.485653939s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '17s'}]}}.
+2026-07-11 20:45:44,399 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:45:44,401 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._async_request_once in 2.35 seconds as it raised ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 15.439629158s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '15s'}]}}.
+2026-07-11 20:45:46,955 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:45:46,965 - services.interview_agent_service - ERROR - Agent error during chat: Error calling model 'gemini-2.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 13.112603094s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '13s'}]}}
+2026-07-11 20:45:47,569 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:45:47,573 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._async_request_once in 4.56 seconds as it raised ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 12.254073524s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '12s'}]}}.
+2026-07-11 20:45:52,484 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:45:52,486 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._async_request_once in 8 seconds as it raised ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 7.444162314s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '7s'}]}}.
+2026-07-11 20:46:01,404 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:46:01,406 - google_genai._api_client - INFO - Retrying google.genai._api_client.BaseApiClient._async_request_once in 16.8 seconds as it raised ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 58.62418664s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '58s'}]}}.
+2026-07-11 20:46:19,009 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-07-11 20:46:19,010 - services.interview_agent_service - ERROR - Report generation failed: Error calling model 'gemini-2.5-flash' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 41.095615597s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '41s'}]}}
+2026-07-11 20:50:50,077 - watchfiles.main - INFO - 1 change detected

@@ -30,10 +30,17 @@ class Settings(BaseSettings):
     ai_temperature: float = Field(default=0.2, env="AI_TEMPERATURE")
     ai_max_tokens: int = Field(default=4000, env="AI_MAX_TOKENS")
     
+    # Redis Configuration
+    redis_url: str = Field(default="redis://localhost:6379", env="REDIS_URL")
+    
     # API Keys (optional - validated when provider is selected)
     gemini_api_key: str = Field(default="", env="GEMINI_API_KEY")
     openai_api_key: str = Field(default="", env="OPENAI_API_KEY")
     anthropic_api_key: str = Field(default="", env="ANTHROPIC_API_KEY")
+    
+    # Pinecone Configuration
+    pinecone_api_key: str = Field(default="", env="PINECONE_API_KEY")
+    pinecone_index_name: str = Field(default="ai-career-copilot", env="PINECONE_INDEX_NAME")
     
     # Model Configuration
     gemini_model: str = Field(default="models/gemini-2.5-flash", env="GEMINI_MODEL")

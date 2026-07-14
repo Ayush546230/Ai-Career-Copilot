@@ -4,10 +4,15 @@ Provides singleton instances of services and providers.
 """
 
 import logging
+import os
 from functools import lru_cache
 
 from core.factory import AIProviderFactory
 from services.ai_service import AIService
+from services.interview_service import InterviewService
+from services.interview_agent_service import InterviewAgentService
+from services.rag_service import RAGService
+from services.mentor_service import MentorService
 from config import settings
 
 logger = logging.getLogger(__name__)
@@ -17,12 +22,6 @@ logger = logging.getLogger(__name__)
 def get_ai_provider():
     """
     Get or create AI provider instance (singleton).
-    
-    Returns:
-        Configured AI provider instance
-        
-    Raises:
-        ValueError: If provider configuration is invalid
     """
     logger.info(f"Creating AI provider: {settings.ai_provider}")
     
@@ -41,24 +40,59 @@ def get_ai_provider():
 
 @lru_cache()
 def get_ai_service() -> AIService:
-    """
-    Get or create AI service instance (singleton).
-    
-    Returns:
-        Configured AI service instance
-    """
+    """Get or create AI service instance (singleton)."""
     provider = get_ai_provider()
-    service = AIService(provider=provider)
-    logger.info("AI service created successfully")
-    return service
+    return AIService(provider=provider)
 
 
-# FastAPI dependency
-async def get_ai_service_dependency() -> AIService:
-    """
-    FastAPI dependency for injecting AI service.
+@lru_cache()
+def get_interview_service():
+    """Get or create Interview service instance (singleton).
     
-    Yields:
-        AI service instance
+    Uses LangChain Agent by default. Set USE_AGENT_INTERVIEW=false
+    to fall back to the old prompt-based service.
     """
+    use_agent = os.getenv("USE_AGENT_INTERVIEW", "true").lower() == "true"
+    
+    if use_agent:
+        try:
+            service = InterviewAgentService()
+            logger.info("Using LangChain Interview Agent")
+            return service
+        except Exception as e:
+            logger.warning(f"Failed to init agent, falling back to legacy: {str(e)}")
+            provider = get_ai_provider()
+            return InterviewService(provider=provider)
+    else:
+        logger.info("Using legacy InterviewService (USE_AGENT_INTERVIEW=false)")
+        provider = get_ai_provider()
+        return InterviewService(provider=provider)
+
+
+@lru_cache()
+def get_rag_service() -> RAGService:
+    """Get or create RAG service instance (singleton)."""
+    provider = get_ai_provider()
+    return RAGService(provider=provider)
+
+
+@lru_cache()
+def get_mentor_service() -> MentorService:
+    """Get or create Mentor service instance (singleton)."""
+    provider = get_ai_provider()
+    rag_service = get_rag_service()
+    return MentorService(provider=provider, rag_service=rag_service)
+
+
+# FastAPI dependencies
+async def get_ai_service_dependency() -> AIService:
     return get_ai_service()
+
+async def get_interview_service_dependency() -> InterviewService:
+    return get_interview_service()
+
+async def get_mentor_service_dependency() -> MentorService:
+    return get_mentor_service()
+
+async def get_rag_service_dependency() -> RAGService:
+    return get_rag_service()
