@@ -6,11 +6,7 @@ require('dotenv').config({ override: false });
 const { redisClient } = require('./config/redis');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const jwt = require('jsonwebtoken');
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-    : ['http://localhost:5173', 'http://localhost:3000'];
 
 const authRoutes = require('./routes/auth.routes');
 const healthRoutes = require('./routes/health.routes');
@@ -24,25 +20,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: allowedOrigins,
+        origin: "*", // Adjust for production
         methods: ["GET", "POST"]
-    }
-});
-
-// Socket Authentication Middleware
-io.use((socket, next) => {
-    try {
-        const token = socket.handshake.auth?.token;
-        if (!token) {
-            return next(new Error('Authentication error: Token missing'));
-        }
-        
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        socket.userId = decoded.id;
-        socket.userRole = decoded.role;
-        next();
-    } catch (error) {
-        next(new Error('Authentication error: Invalid token'));
     }
 });
 
@@ -66,7 +45,7 @@ io.on('connection', (socket) => {
 });
 
 // Middleware
-app.set('trust proxy', 1); // Important for Render/Vercel to get correct client IPs
+app.set('trust proxy', 1);
 
 app.use(helmet({
     crossOriginResourcePolicy: false, // Prevents blocking cross-origin requests from frontend
@@ -82,6 +61,9 @@ const limiter = rateLimit({
 
 app.use('/api', limiter); // Apply rate limiter to all API routes
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+    : ['http://localhost:5173', 'http://localhost:3000'];
 
 app.use(cors({
     origin: function (origin, callback) {
