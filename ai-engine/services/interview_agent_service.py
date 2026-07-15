@@ -105,10 +105,11 @@ class InterviewAgentService:
         tool_calls_data = []
         
         for msg in new_messages:
-            if isinstance(msg, AIMessage) and msg.content and not msg.tool_calls:
-                # This is the final text response (no pending tool calls)
-                final_output = msg.content
-            elif isinstance(msg, ToolMessage):
+            if isinstance(msg, AIMessage) and msg.content:
+                # Capture the LAST AIMessage with content as the final response
+                # Some LLMs attach tool_calls alongside content in the same message
+                final_output = msg.content if isinstance(msg.content, str) else str(msg.content)
+            if isinstance(msg, ToolMessage):
                 tool_calls_data.append({
                     "tool_name": msg.name,
                     "tool_output": msg.content,
