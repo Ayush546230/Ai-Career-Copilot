@@ -93,15 +93,18 @@ class InterviewAgentService:
         """
         agent = self._create_agent(system_prompt)
         
+        input_count = len(messages)
         result = await agent.ainvoke({"messages": messages})
         
-        # Extract final output and tool call data from the message list
+        # Extract final output and tool call data ONLY from NEW messages
+        # LangGraph returns ALL messages (input + generated), so we skip the input ones
         output_messages = result.get("messages", [])
+        new_messages = output_messages[input_count:]  # Only agent-generated messages
         
         final_output = ""
         tool_calls_data = []
         
-        for msg in output_messages:
+        for msg in new_messages:
             if isinstance(msg, AIMessage) and msg.content and not msg.tool_calls:
                 # This is the final text response (no pending tool calls)
                 final_output = msg.content
@@ -370,7 +373,14 @@ class InterviewAgentService:
                 HumanMessage(content=report_prompt),
             ])
             
-            scorecard_data = json.loads(response.content)
+            # Strip markdown code fences if LLM wraps response in ```json ... ```
+            raw_content = response.content.strip()
+            if raw_content.startswith("```"):
+                raw_content = raw_content.split("\n", 1)[-1]  # Remove first line (```json)
+                if raw_content.endswith("```"):
+                    raw_content = raw_content[:-3].strip()
+            
+            scorecard_data = json.loads(raw_content)
             
             # Normalize LLM response fields
             normalized = {
