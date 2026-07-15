@@ -232,8 +232,27 @@ class InterviewAgentService:
         
         # Build the instruction for the agent (appended as final user message)
         interview_type = session_data["interview_type"]
+        
+        # Extract previously asked questions so agent doesn't repeat them
+        previous_questions = []
+        for msg in history:
+            if msg["role"] == "assistant":
+                previous_questions.append(msg["content"][:200])  # First 200 chars to keep prompt lean
+        
+        previously_asked_section = ""
+        if previous_questions:
+            questions_list = "\n".join(f"  - Q{i+1}: {q}" for i, q in enumerate(previous_questions))
+            previously_asked_section = (
+                f"\n\n**QUESTIONS YOU HAVE ALREADY ASKED (DO NOT REPEAT OR ASK SIMILAR ONES):**\n"
+                f"{questions_list}\n"
+                f"You MUST ask a COMPLETELY DIFFERENT question on a NEW topic. "
+                f"Cover diverse areas — do NOT revisit topics you already explored.\n"
+            )
+        
         agent_instruction = (
             f"\n\n[INTERNAL INSTRUCTIONS — DO NOT SHARE WITH CANDIDATE]\n"
+            f"This is question #{question_number} of the interview.\n"
+            f"{previously_asked_section}"
             f"1. First, use evaluate_answer to score their response. "
             f"Question was: \"{history[-2]['content'] if len(history) >= 2 else 'introductory question'}\"\n"
             f"2. Use manage_session with action='should_end', question_number={question_number}, "
@@ -253,8 +272,15 @@ class InterviewAgentService:
             )
         
         agent_instruction += (
+            f"\n**NEXT QUESTION STRATEGY:**\n"
+            f"- Look at what the candidate just said. If they mentioned any specific technology, project, "
+            f"or concept, ask a deeper follow-up on that.\n"
+            f"- If they said 'I don't know' or gave a very short answer, acknowledge it kindly "
+            f"('No worries!') and move to a completely different topic from their resume.\n"
+            f"- Balance follow-ups with new topics from the resume and role requirements.\n"
             f"\nRespond ONLY as the interviewer Alex. Be natural and professional. "
-            f"NEVER mention tools, scoring, or evaluation to the candidate."
+            f"NEVER mention tools, scoring, or evaluation to the candidate. "
+            f"Ask a FRESH question — either a follow-up on their answer or a new topic you haven't covered."
         )
         
         # The last message is the user's answer + internal instructions
