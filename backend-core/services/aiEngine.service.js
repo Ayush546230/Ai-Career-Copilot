@@ -104,16 +104,31 @@ class AIEngineService {
     async getProviders() {
         try {
             const response = await this.client.get(`${this.apiPrefix}/providers`);
-            return {
-                success: true,
-                data: response.data
-            };
+            return { success: true, data: response.data };
         } catch (error) {
             console.error('Failed to fetch providers:', error.message);
-            return {
-                success: false,
-                error: error.message
-            };
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Match mentors based on student profile
+     * @param {Object} studentData - Student resume and preferences
+     */
+    async matchMentors(studentData) {
+        try {
+            const url = `${this.apiPrefix}/mentors/match`;
+            console.log(`DEBUG: Matching Mentors at ${this.baseURL}${url}`);
+            console.log(`DEBUG: Payload keys:`, Object.keys(studentData));
+            
+            const response = await this.client.post(url, studentData);
+            return { success: true, data: response.data };
+        } catch (error) {
+            console.error('Mentor matching failed ERROR:', error.message);
+            if (error.response) {
+                console.error('AI Engine Error Response:', error.response.data);
+            }
+            return { success: false, error: error.message };
         }
     }
 }
