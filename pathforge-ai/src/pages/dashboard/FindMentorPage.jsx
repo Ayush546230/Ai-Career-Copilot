@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Icon from "../../components/ui/Icon";
 import { useToast } from "../../hooks/useToast";
@@ -12,6 +12,7 @@ export default function FindMentorPage() {
     const [loading, setLoading] = useState(false);
     const [initialLoad, setInitialLoad] = useState(true);
     const { message, showToast } = useToast();
+    const hasInitialized = useRef(false);
 
     const fetchMatches = async () => {
         setLoading(true);
@@ -33,7 +34,11 @@ export default function FindMentorPage() {
     };
 
     useEffect(() => {
-        fetchMatches();
+        // Prevent double API calls from React.StrictMode double-mounting in development
+        if (!hasInitialized.current) {
+            hasInitialized.current = true;
+            fetchMatches();
+        }
     }, []);
 
     return (
