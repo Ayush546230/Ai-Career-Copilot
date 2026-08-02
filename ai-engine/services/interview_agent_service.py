@@ -107,8 +107,20 @@ class InterviewAgentService:
         for msg in new_messages:
             if isinstance(msg, AIMessage) and msg.content:
                 # Capture the LAST AIMessage with content as the final response
-                # Some LLMs attach tool_calls alongside content in the same message
-                final_output = msg.content if isinstance(msg.content, str) else str(msg.content)
+                # Normalize content to a readable string: handle list/dict/string
+                content = msg.content
+                if isinstance(content, list):
+                    parts = []
+                    for c in content:
+                        if isinstance(c, dict):
+                            parts.append(c.get("text") or c.get("content") or json.dumps(c))
+                        else:
+                            parts.append(str(c))
+                    final_output = " ".join(parts)
+                elif isinstance(content, dict):
+                    final_output = content.get("text") or content.get("content") or json.dumps(content)
+                else:
+                    final_output = str(content)
             if isinstance(msg, ToolMessage):
                 tool_calls_data.append({
                     "tool_name": msg.name,
