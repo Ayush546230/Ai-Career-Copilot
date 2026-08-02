@@ -22,6 +22,24 @@ export default function MockInterviewPage() {
         scrollToBottom();
     }, [messages]);
 
+    // Safely render content from the AI: handles plain strings, JSON strings, arrays, and objects
+    const renderContent = (content) => {
+        if (!content) return '';
+        if (typeof content === 'object') {
+            if (Array.isArray(content)) {
+                return content.map(c => c.text || c.content || (typeof c === 'string' ? c : JSON.stringify(c))).join(' ');
+            }
+            return content.text || content.content || JSON.stringify(content);
+        }
+        try {
+            const parsed = JSON.parse(content);
+            if (Array.isArray(parsed)) return parsed.map(p => p.text || p.content || (typeof p === 'string' ? p : JSON.stringify(p))).join(' ');
+            return parsed.text || parsed.content || String(parsed);
+        } catch (e) {
+            return content;
+        }
+    };
+
     const handleStart = async (type) => {
         setLoading(true);
         setStatus("starting");
@@ -177,7 +195,7 @@ export default function MockInterviewPage() {
                         lineHeight: 1.5,
                         boxShadow: "0 2px 10px rgba(0,0,0,0.1)"
                     }}>
-                        {m.content}
+                        {renderContent(m.content)}
                     </div>
                 ))}
                 {loading && (

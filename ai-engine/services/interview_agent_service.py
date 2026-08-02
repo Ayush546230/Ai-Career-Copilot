@@ -374,13 +374,28 @@ class InterviewAgentService:
                 HumanMessage(content=report_prompt),
             ])
             
-            # Strip markdown code fences if LLM wraps response in ```json ... ```
-            raw_content = response.content.strip()
+            # Normalize response content into a string and strip markdown fences if present
+            content = response.content
+            # If provider returns a list of chunks, join text/content fields
+            if isinstance(content, list):
+                parts = []
+                for c in content:
+                    if isinstance(c, dict):
+                        parts.append(c.get("text") or c.get("content") or json.dumps(c))
+                    else:
+                        parts.append(str(c))
+                content = " ".join(parts)
+            elif isinstance(content, dict):
+                content = content.get("text") or content.get("content") or json.dumps(content)
+            else:
+                content = str(content)
+
+            raw_content = content.strip()
             if raw_content.startswith("```"):
                 raw_content = raw_content.split("\n", 1)[-1]  # Remove first line (```json)
                 if raw_content.endswith("```"):
                     raw_content = raw_content[:-3].strip()
-            
+
             scorecard_data = json.loads(raw_content)
             
             # Normalize LLM response fields
