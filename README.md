@@ -126,6 +126,44 @@ Structured RESTful API routes:
 - **Message & Session Schemas**: Tracking real-time chat histories and booked mentorship blocks.
 
 ---
+### AI Career Copilot Home Page
+![Home](images/home.png)
+
+### User Sign Up Page
+![Sign Up](images/signup.png)
+
+### User Sign In Page
+![Sign In](images/signin.png)
+
+### Personalized User Dashboard
+![Dashboard](images/dashboard.png)
+
+### Resume Upload Interface
+![Upload](images/upload.png)
+
+### Resume ATS Score Analysis
+![ATS Score](images/atsscore.png)
+
+### Detailed Resume Analysis
+![Analysis](images/analysis.png)
+
+### AI Career Agents
+![Agents](images/agents.png)
+
+### AI Mock Interview Interface
+![Interview](images/interview.png)
+
+### Interview Performance Analysis
+![Performance](images/performance.png)
+
+### RAG Based Career Mentor
+![RAG Mentor](images/ragmentor.png)
+
+### API Failure RAG Handling
+![API Fail RAG](images/apifailrag.png)
+
+### AI Career Mentor Chat
+![Mentor Chat](images/mentorchat.png)
 
 ## Project Structure
 
